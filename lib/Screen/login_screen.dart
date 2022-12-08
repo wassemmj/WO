@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'singup_screen.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
@@ -169,8 +171,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 15),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Text(
+                    children: [
+                      const Text(
                         'Not a member?',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -178,17 +180,17 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       InkWell(
-                        child: Text(
+                        child: const Text(
                           'Register Now',
                           style: TextStyle(
                             color: Colors.purple,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        // onTap: () {
-                        //   Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        //       builder: (_) => widget.user? const SingUpScreen():const SingUpExpert()));
-                        // },
+                        onTap: () {
+                          Navigator.of(context).pushReplacement(MaterialPageRoute(
+                              builder: (_) => const SignUp()));
+                        },
                       ),
                     ],
                   ),

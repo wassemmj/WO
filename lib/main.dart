@@ -20,11 +20,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.grey.shade100,
         primarySwatch: Colors.grey,
       ),
-<<<<<<< HEAD
-      home: const SignUp(),
-=======
       home: const ExpertProfileScreen(),
->>>>>>> 98b574c3ccbad25109f2dbc5d871c6f1983a495f
     );
   }
 }
