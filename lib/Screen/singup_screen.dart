@@ -1,3 +1,4 @@
+import 'package:cons_app/Screen/expert_profile_screen.dart';
 import 'package:cons_app/Screen/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,10 +13,14 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   final _formKey = GlobalKey<FormState>();
   bool obscure = true;
+  bool coObscure = true;
+
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final userNameController = TextEditingController();
-  final ConfirmPasswordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+
+  bool isExpert = false;
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +41,8 @@ class _SignUpState extends State<SignUp> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 100),
+                  Container(
+                    padding: const EdgeInsets.only(bottom: 50),
                     child: Text(
                       'Sign Up',
                       style: GoogleFonts.bebasNeue(fontSize: 52, color: Colors.white),
@@ -65,11 +70,14 @@ class _SignUpState extends State<SignUp> {
                     ),
                     cursorColor: Colors.purple,
                     controller: userNameController,
-
-
+                    validator: (val) {
+                      if(val!.isEmpty) {
+                        return 'Name is Required';
+                      }
+                    },
                     style: const TextStyle(color: Colors.black54),
                   ),
-                  SizedBox(height: 20,),
+                  const SizedBox(height: 20),
                   TextFormField(
                     decoration: InputDecoration(
                       hintText: 'Enter Email',
@@ -104,7 +112,7 @@ class _SignUpState extends State<SignUp> {
                     },
                     style: const TextStyle(color: Colors.black54),
                   ),
-                  SizedBox(height: 20,),
+                  const SizedBox(height: 20),
                   TextFormField(
                     decoration: InputDecoration(
                       hintText: 'Enter Your Password',
@@ -161,12 +169,12 @@ class _SignUpState extends State<SignUp> {
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(
-                          obscure ? Icons.visibility : Icons.visibility_off,
+                          coObscure ? Icons.visibility : Icons.visibility_off,
                           color: Colors.purple,
                         ),
                         onPressed: () {
                           setState(() {
-                            obscure = !obscure;
+                            coObscure = !coObscure;
                           });
                         },
                       ),
@@ -180,20 +188,19 @@ class _SignUpState extends State<SignUp> {
                       ),
                     ),
                     cursorColor: Colors.purple,
-                    obscureText: obscure,
-                    controller: ConfirmPasswordController,
+                    obscureText: coObscure,
+                    controller: confirmPasswordController,
                     validator: (val) {
                       if(val!.isEmpty) {
                         return 'Password is Required';
-                      } else if(passwordController.value!=ConfirmPasswordController.value) {
-                        return ' Password dosen\'t match';
+                      } else if(passwordController.value!=confirmPasswordController.value) {
+                        return ' Passwords don\'t match';
                       }
-
                     },
                     style: const TextStyle(color: Colors.black54),
                   ),
                   const SizedBox(height: 20),
-                  InkWell(
+                  InkWell (
                     child: Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
@@ -206,10 +213,10 @@ class _SignUpState extends State<SignUp> {
                         ),
                         borderRadius: BorderRadius.circular(25),
                       ),
-                      child: const Center(
+                      child: Center(
                         child: Text(
-                          'Sign Up',
-                          style: TextStyle(
+                          isExpert? 'Continue':'Sign Up',
+                          style: const TextStyle(
                             color: Colors.black54,
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
@@ -219,16 +226,21 @@ class _SignUpState extends State<SignUp> {
                     ),
                     onTap: () {
                       if(_formKey.currentState!.validate()) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Sign up Successfully",style: TextStyle(fontSize: 15),),
-                              duration: Duration(seconds: 1),
-                            )
-                        );
-                        //Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_)=> const CatScreen()));
+                        if(!isExpert) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Register Successfully",style: TextStyle(fontSize: 15),),
+                                duration: Duration(seconds: 1),
+                              )
+                          );
+                        }
                         _formKey.currentState!.save();
                         emailController.clear();
                         passwordController.clear();
+                        if(isExpert) {
+                          var name = userNameController.value.text.split(' ');
+                          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_)=>ExpertProfileScreen(name: name[0],)));
+                        }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -243,7 +255,7 @@ class _SignUpState extends State<SignUp> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children:  [
-                      Text(
+                      const Text(
                         'already have an account?',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -251,14 +263,14 @@ class _SignUpState extends State<SignUp> {
                         ),
                       ),
                       InkWell(
-                        child: Text(
+                        child: const Text(
                           'Log In',
                           style: TextStyle(
                             color: Colors.purple,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        onTap: (){Navigator.of(context).push(MaterialPageRoute(builder: (_)=>LoginScreen()));},
+                        onTap: (){Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_)=>const LoginScreen()));},
 
                         // onTap: () {
                         //   Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -266,6 +278,38 @@ class _SignUpState extends State<SignUp> {
                         // },
                       ),
                     ],
+                  ),
+                  Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'User',
+                          style: TextStyle(
+                            color: Colors.black54,
+                            fontSize: 15,
+                          ),
+                        ),
+                        Switch(
+                          value: isExpert,
+                          activeColor: Colors.purple,
+                          inactiveThumbColor: Colors.black45,
+                          inactiveTrackColor: Colors.black45,
+                          onChanged: (val) {
+                            setState(() {
+                              isExpert = val;
+                            });
+                          },
+                        ),
+                        const Text(
+                          'Expert',
+                          style: TextStyle(
+                            color: Colors.black54,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

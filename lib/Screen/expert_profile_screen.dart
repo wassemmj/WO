@@ -3,10 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 
 class ExpertProfileScreen extends StatefulWidget {
-  const ExpertProfileScreen({Key? key}) : super(key: key);
+  const ExpertProfileScreen({Key? key,required this.name}) : super(key: key);
+
+  final String name;
 
   @override
   State<ExpertProfileScreen> createState() => _ExpertProfileScreenState();
@@ -17,10 +18,8 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
   final ImagePicker picker = ImagePicker();
   File? pickedImage;
 
-  String _startTime = DateFormat('hh:mm a').format(DateTime.now()).toString();
-  String _endTime = DateFormat('hh:mm a')
-      .format(DateTime.now().add(const Duration(minutes: 120)))
-      .toString();
+  String? _startTime ;
+  String? _endTime ;
 
   var addressController = TextEditingController();
   var phoneController = TextEditingController();
@@ -31,6 +30,9 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
   bool _isC3 = false;
   bool _isC4 = false;
   bool _isC5 = false;
+
+  String st = 'From';
+  String ed = 'To';
 
   @override
   Widget build(BuildContext context) {
@@ -54,15 +56,17 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Name,Complete Your Profile',
+                    '${widget.name},Complete Your Profile',
                     style: GoogleFonts.bebasNeue(
-                        fontSize: 35, color: Colors.white),
+                        fontSize: 30,
+                        color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25),
                     child: Column(
-                      //mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Container(
                           padding: const EdgeInsets.all(8),
@@ -72,9 +76,9 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                             child: SizedBox.fromSize(
                               size: const Size.fromRadius(50),
                               child: pickedImage == null
-                                  ? Image.asset('images/person.jpeg',
-                                      fit: BoxFit.fitHeight)
-                                  : Image.file(pickedImage!),
+                                  ? Image.asset('images/i.png',
+                                      fit: BoxFit.cover)
+                                  : Image.file(pickedImage!,fit: BoxFit.scaleDown,),
                             ),
                           ),
                         ),
@@ -95,7 +99,7 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                                   MaterialStateProperty.all(Colors.purple)),
                           icon: const Icon(Icons.image),
                           label: const Text('Image'),
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -186,7 +190,7 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                     ),
                     cursorColor: Colors.purple,
                     controller: skillController,
-                    maxLines: 2,
+                    maxLines: 4,
                     validator: (val) {
                       if (val!.isEmpty) {
                         return 'Skill is Required';
@@ -217,16 +221,9 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                             color: Colors.purple,
                           ),
                           label: Text(
-                            _startTime,
+                            st,
                             style: const TextStyle(color: Colors.purple),
                           ),
-                        ),
-                      ),
-                      const Text(
-                        'to',
-                        style: TextStyle(
-                          color: Colors.black87,
-                          fontSize: 18,
                         ),
                       ),
                       Expanded(
@@ -237,9 +234,22 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                             color: Colors.purple,
                           ),
                           label: Text(
-                            _endTime,
+                            ed,
                             style: const TextStyle(color: Colors.purple),
                           ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'consultations :',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],
@@ -302,7 +312,7 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 20),
                   InkWell(
                     child: Container(
                       padding: const EdgeInsets.all(20),
@@ -328,6 +338,28 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                       ),
                     ),
                     onTap: () {
+                      if (_startTime==null||_endTime==null) {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text(
+                            "You Should fill all item",
+                            style: TextStyle(fontSize: 15),
+                          ),
+                          duration: Duration(seconds: 1),
+                        ));
+                        return;
+                      }
+                      if (_isC1==false&&_isC2==false&&_isC3==false&&_isC4==false&&_isC5==false) {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text(
+                            "You Should choose one or more consultation",
+                            style: TextStyle(fontSize: 15),
+                          ),
+                          duration: Duration(seconds: 1),
+                        ));
+                        return;
+                      }
                       if (_formKey.currentState!.validate()) {
                         ScaffoldMessenger.of(context)
                             .showSnackBar(const SnackBar(
@@ -342,6 +374,15 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                         phoneController.clear();
                         addressController.clear();
                         skillController.clear();
+                        setState(() {
+                          _isC1 = false;
+                          _isC2 = false;
+                          _isC3 = false;
+                          _isC4 = false;
+                          _isC5 = false;
+                          st = 'From';
+                          ed = 'To';
+                        });
                       } else {
                         ScaffoldMessenger.of(context)
                             .showSnackBar(const SnackBar(
@@ -367,17 +408,19 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
     TimeOfDay? pickedTime = await showTimePicker(
       initialEntryMode: TimePickerEntryMode.input,
       context: context,
-      initialTime: isStart
-          ? TimeOfDay.fromDateTime(DateTime.now())
-          : TimeOfDay.fromDateTime(
-              DateTime.now().add(const Duration(minutes: 15))),
+      initialTime: TimeOfDay.fromDateTime(DateTime(2020)),
     );
     String formattedTime = pickedTime!.format(context);
     if (isStart) {
-      setState(() => _startTime = formattedTime);
-    } else if (!isStart) {
-      setState(() => _endTime = formattedTime);
-    } else
-      print('');
+      setState(() {
+        _startTime = formattedTime;
+        st = _startTime!;
+      });
+    } else {
+      setState(() {
+        _endTime = formattedTime;
+        ed = _endTime!;
+      });
+    }
   }
 }
