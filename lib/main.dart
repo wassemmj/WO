@@ -1,3 +1,4 @@
+import 'package:cons_app/Screen/expert_profile_screen.dart';
 import 'package:cons_app/Screen/login_screen.dart';
 import 'package:cons_app/Screen/singup_screen.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,11 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.grey.shade100,
         primarySwatch: Colors.grey,
       ),
+<<<<<<< HEAD
       home: const SignUp(),
+=======
+      home: const ExpertProfileScreen(),
+>>>>>>> 98b574c3ccbad25109f2dbc5d871c6f1983a495f
     );
   }
 }
