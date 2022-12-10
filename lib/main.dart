@@ -1,4 +1,5 @@
 import 'package:cons_app/Screen/login_screen.dart';
+import 'package:cons_app/Screen/tabs_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {

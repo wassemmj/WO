@@ -1,5 +1,6 @@
 import 'package:cons_app/Screen/expert_profile_screen.dart';
 import 'package:cons_app/Screen/login_screen.dart';
+import 'package:cons_app/Screen/tabs_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -226,6 +227,7 @@ class _SignUpState extends State<SignUp> {
                     ),
                     onTap: () {
                       if(_formKey.currentState!.validate()) {
+                        _formKey.currentState!.save();
                         if(!isExpert) {
                           ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
@@ -233,10 +235,8 @@ class _SignUpState extends State<SignUp> {
                                 duration: Duration(seconds: 1),
                               )
                           );
+                          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_)=>const TabsScreen()));
                         }
-                        _formKey.currentState!.save();
-                        emailController.clear();
-                        passwordController.clear();
                         if(isExpert) {
                           var name = userNameController.value.text.split(' ');
                           Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_)=>ExpertProfileScreen(name: name[0],)));

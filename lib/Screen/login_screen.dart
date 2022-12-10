@@ -1,3 +1,4 @@
+import 'package:cons_app/Screen/tabs_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -40,7 +41,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: const EdgeInsets.only(bottom: 100),
                     child: Text(
                       'Log In',
-                      style: GoogleFonts.bebasNeue(fontSize: 52, color: Colors.white),
+                      style: GoogleFonts.bebasNeue(
+                          fontSize: 52, color: Colors.white),
                     ),
                   ),
                   TextFormField(
@@ -66,12 +68,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     cursorColor: Colors.purple,
                     controller: emailController,
                     validator: (val) {
-                      final bool emailValid =
-                      RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                      final bool emailValid = RegExp(
+                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                           .hasMatch(val!);
-                      if(val.isEmpty) {
+                      if (val.isEmpty) {
                         return 'Email is Required';
-                      } else if(!emailValid) {
+                      } else if (!emailValid) {
                         return 'Not a Valid Email';
                       }
                     },
@@ -113,9 +115,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     obscureText: obscure,
                     controller: passwordController,
                     validator: (val) {
-                      if(val!.isEmpty) {
+                      if (val!.isEmpty) {
                         return 'Password is Required';
-                      } else if(val.length<8) {
+                      } else if (val.length < 8) {
                         return 'Short Password';
                       }
                     },
@@ -147,24 +149,28 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     onTap: () {
-                      if(_formKey.currentState!.validate()) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Log in Successfully",style: TextStyle(fontSize: 15),),
-                              duration: Duration(seconds: 1),
-                            )
-                        );
-                        //Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_)=> const CatScreen()));
+                      if (_formKey.currentState!.validate()) {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text(
+                            "Log in Successfully",
+                            style: TextStyle(fontSize: 15),
+                          ),
+                          duration: Duration(seconds: 1),
+                        ));
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_)=> const TabsScreen()));
                         _formKey.currentState!.save();
                         emailController.clear();
                         passwordController.clear();
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Try Again!",style: TextStyle(fontSize: 15),),
-                              duration: Duration(seconds: 1),
-                            )
-                        );
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text(
+                            "Try Again!",
+                            style: TextStyle(fontSize: 15),
+                          ),
+                          duration: Duration(seconds: 1),
+                        ));
                       }
                     },
                   ),
@@ -188,8 +194,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         onTap: () {
-                          Navigator.of(context).pushReplacement(MaterialPageRoute(
-                              builder: (_) => const SignUp()));
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (_) => const SignUp()));
                         },
                       ),
                     ],

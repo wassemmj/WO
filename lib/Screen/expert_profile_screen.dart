@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cons_app/Screen/tabs_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -369,8 +370,8 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                           ),
                           duration: Duration(seconds: 1),
                         ));
-                        //Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_)=> const CatScreen()));
                         _formKey.currentState!.save();
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_)=> const TabsScreen()));
                         phoneController.clear();
                         addressController.clear();
                         skillController.clear();
@@ -408,7 +409,7 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
     TimeOfDay? pickedTime = await showTimePicker(
       initialEntryMode: TimePickerEntryMode.input,
       context: context,
-      initialTime: TimeOfDay.fromDateTime(DateTime(2020)),
+      initialTime: TimeOfDay.fromDateTime(DateTime(2022)),
     );
     String formattedTime = pickedTime!.format(context);
     if (isStart) {
