@@ -13,16 +13,16 @@ class Construction extends StatelessWidget {
         title: Container(
           padding: const EdgeInsets.all(25),
           decoration: BoxDecoration(
-            color: Colors.grey[300],
+            color: const Color.fromARGB(100, 0, 0, 65),
             borderRadius: BorderRadius.circular(25)
           ),
           child: Text(
             constructionName,
             textAlign: TextAlign.center,
             style: const TextStyle(
-              color: Colors.black54,
+              color: Colors.white,
               fontSize: 20,
-              fontWeight: FontWeight.w500
+              fontWeight: FontWeight.w500,
             ),
           ),
         ),
