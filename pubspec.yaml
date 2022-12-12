@@ -23,6 +23,7 @@ dependencies:
   image_picker:
   intl:
   circular_bottom_navigation: ^2.3.0
+  easy_splash_screen: ^1.0.4
 
 
 
