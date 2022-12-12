@@ -1,3 +1,4 @@
+import 'package:cons_app/Screen/expert_details.dart';
 import 'package:flutter/material.dart';
 
 class Expert extends StatelessWidget {
@@ -45,6 +46,7 @@ class Expert extends StatelessWidget {
           ],
         ),
       ),
+      onTap: ()=>Navigator.of(context).push(MaterialPageRoute(builder: (_)=>ExpertDetails(expertName: name))),
     );
   }
 }
