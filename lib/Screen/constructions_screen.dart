@@ -12,7 +12,11 @@ class ConstructionsScreen extends StatelessWidget {
     return ListView.builder(
       itemCount: li.length,
       itemBuilder: (ctx,index) {
-        return Construction(constructionName: li[index],);
+        return Column(
+          children: [
+            Construction(constructionName: li[index],),
+          ],
+        );
       },
     );
   }

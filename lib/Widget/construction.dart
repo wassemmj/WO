@@ -1,7 +1,9 @@
+import 'package:cons_app/Screen/experts_screen.dart';
 import 'package:flutter/material.dart';
 
 class Construction extends StatelessWidget {
-  const Construction({Key? key, required this.constructionName}) : super(key: key);
+  const Construction({Key? key, required this.constructionName})
+      : super(key: key);
 
   final String constructionName;
 
@@ -13,9 +15,8 @@ class Construction extends StatelessWidget {
         title: Container(
           padding: const EdgeInsets.all(25),
           decoration: BoxDecoration(
-            color: const Color.fromARGB(100, 0, 0, 65),
-            borderRadius: BorderRadius.circular(25)
-          ),
+              color: const Color.fromARGB(100, 0, 0, 65),
+              borderRadius: BorderRadius.circular(25)),
           child: Text(
             constructionName,
             textAlign: TextAlign.center,
@@ -26,6 +27,11 @@ class Construction extends StatelessWidget {
             ),
           ),
         ),
+        onTap: () => Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => ExpertsScreen(expert: const [
+                  {'name': 'obada', 'imgPath': ''},
+                  {'name': 'wassim', 'imgPath': ''}
+                ], consName: constructionName))),
       ),
     );
   }
