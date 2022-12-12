@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ExpertProfileScreen extends StatefulWidget {
-  const ExpertProfileScreen({Key? key,required this.name}) : super(key: key);
+  const ExpertProfileScreen({Key? key, required this.name}) : super(key: key);
 
   final String name;
 
@@ -19,8 +19,8 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
   final ImagePicker picker = ImagePicker();
   File? pickedImage;
 
-  String? _startTime ;
-  String? _endTime ;
+  String? _startTime;
+  String? _endTime;
 
   var addressController = TextEditingController();
   var phoneController = TextEditingController();
@@ -59,8 +59,8 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                   Text(
                     '${widget.name},Complete Your Profile',
                     style: GoogleFonts.bebasNeue(
-                        fontSize: 30,
-                        color: Colors.white,
+                      fontSize: 30,
+                      color: Colors.white,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -79,7 +79,10 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                               child: pickedImage == null
                                   ? Image.asset('images/i.png',
                                       fit: BoxFit.cover)
-                                  : Image.file(pickedImage!,fit: BoxFit.scaleDown,),
+                                  : Image.file(
+                                      pickedImage!,
+                                      fit: BoxFit.scaleDown,
+                                    ),
                             ),
                           ),
                         ),
@@ -212,48 +215,26 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                       ),
                     ],
                   ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextButton.icon(
-                          onPressed: () => _getTimeFromUser(isStart: true),
-                          icon: const Icon(
-                            Icons.access_time_rounded,
-                            color: Colors.purple,
-                          ),
-                          label: Text(
-                            st,
-                            style: const TextStyle(color: Colors.purple),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: TextButton.icon(
-                          onPressed: () => _getTimeFromUser(isStart: false),
-                          icon: const Icon(
-                            Icons.access_time_rounded,
-                            color: Colors.purple,
-                          ),
-                          label: Text(
-                            ed,
-                            style: const TextStyle(color: Colors.purple),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
                   const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: const [
-                      Text(
-                        'consultations :',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                        ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.purple,
                       ),
-                    ],
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    child: Column(
+                      children: [
+                        buildTime('Sunday'),
+                        buildTime('saturday'),
+                        buildTime('friday'),
+                        buildTime('monday'),
+                        buildTime('tuesday'),
+                        buildTime('wednesday'),
+                        buildTime('thursday'),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Container(
@@ -266,7 +247,11 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                     child: Column(
                       children: [
                         CheckboxListTile(
-                          title: const Text('c1',style: TextStyle(color:Colors.purple,fontSize: 20),),
+                          title: const Text(
+                            'c1',
+                            style:
+                                TextStyle(color: Colors.purple, fontSize: 20),
+                          ),
                           value: _isC1,
                           activeColor: Colors.purple,
                           checkColor: Colors.white,
@@ -275,7 +260,11 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                           }),
                         ),
                         CheckboxListTile(
-                          title: const Text('c2',style: TextStyle(color:Colors.purple,fontSize: 20),),
+                          title: const Text(
+                            'c2',
+                            style:
+                                TextStyle(color: Colors.purple, fontSize: 20),
+                          ),
                           value: _isC2,
                           activeColor: Colors.purple,
                           checkColor: Colors.white,
@@ -284,7 +273,11 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                           }),
                         ),
                         CheckboxListTile(
-                          title: const Text('c3',style: TextStyle(color:Colors.purple,fontSize: 20),),
+                          title: const Text(
+                            'c3',
+                            style:
+                                TextStyle(color: Colors.purple, fontSize: 20),
+                          ),
                           value: _isC3,
                           activeColor: Colors.purple,
                           checkColor: Colors.white,
@@ -293,7 +286,11 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                           }),
                         ),
                         CheckboxListTile(
-                          title: const Text('c4',style: TextStyle(color:Colors.purple,fontSize: 20),),
+                          title: const Text(
+                            'c4',
+                            style:
+                                TextStyle(color: Colors.purple, fontSize: 20),
+                          ),
                           value: _isC4,
                           activeColor: Colors.purple,
                           checkColor: Colors.white,
@@ -302,7 +299,11 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                           }),
                         ),
                         CheckboxListTile(
-                          title: const Text('c5',style: TextStyle(color:Colors.purple,fontSize: 20),),
+                          title: const Text(
+                            'c5',
+                            style:
+                                TextStyle(color: Colors.purple, fontSize: 20),
+                          ),
                           value: _isC5,
                           activeColor: Colors.purple,
                           checkColor: Colors.white,
@@ -339,7 +340,7 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                       ),
                     ),
                     onTap: () {
-                      if (_startTime==null||_endTime==null) {
+                      if (_startTime == null || _endTime == null) {
                         ScaffoldMessenger.of(context)
                             .showSnackBar(const SnackBar(
                           content: Text(
@@ -350,7 +351,11 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                         ));
                         return;
                       }
-                      if (_isC1==false&&_isC2==false&&_isC3==false&&_isC4==false&&_isC5==false) {
+                      if (_isC1 == false &&
+                          _isC2 == false &&
+                          _isC3 == false &&
+                          _isC4 == false &&
+                          _isC5 == false) {
                         ScaffoldMessenger.of(context)
                             .showSnackBar(const SnackBar(
                           content: Text(
@@ -371,7 +376,8 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                           duration: Duration(seconds: 1),
                         ));
                         _formKey.currentState!.save();
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_)=> const TabsScreen()));
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (_) => const TabsScreen()));
                         phoneController.clear();
                         addressController.clear();
                         skillController.clear();
@@ -402,6 +408,49 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildTime(String day,) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Text(
+            '$day :',
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        Expanded(
+          child: TextButton.icon(
+            onPressed: () => _getTimeFromUser(isStart: true),
+            icon: const Icon(
+              Icons.access_time_rounded,
+              color: Colors.purple,
+            ),
+            label: Text(
+              st,
+              style: const TextStyle(color: Colors.purple),
+            ),
+          ),
+        ),
+        Expanded(
+          child: TextButton.icon(
+            onPressed: () => _getTimeFromUser(isStart: false),
+            icon: const Icon(
+              Icons.access_time_rounded,
+              color: Colors.purple,
+            ),
+            label: Text(
+              ed,
+              style: const TextStyle(color: Colors.purple),
+            ),
+          ),
+        ),
+      ],
     );
   }
 

@@ -21,7 +21,6 @@ class ExpertDetails extends StatelessWidget {
       ),
       body: SafeArea(
         child: Container(
-          //height: MediaQuery.of(context).size.height,
           alignment: Alignment.center,
           padding: const EdgeInsets.all(25),
           decoration: const BoxDecoration(
@@ -177,15 +176,21 @@ class ExpertDetails extends StatelessWidget {
                           fontWeight: FontWeight.w300,
                         ),),
                         SizedBox(height: 10,),
-                        Text('Financial Construction',style: TextStyle(
+                        Text(
+                          'Financial Construction',
+                          style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w300,
-                        ),),
+                        ),
+                        ),
                         SizedBox(height: 10,),
-                        Text('Medical Construction',style: TextStyle(
+                        Text(
+                          'Medical Construction',
+                          style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w300,
-                        ),),
+                        ),
+                        ),
                       ],
                     ),
                   ],
@@ -195,9 +200,9 @@ class ExpertDetails extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.timer_rounded,color: Colors.white,),
         backgroundColor: Colors.purple,
         onPressed: (){},
+        child: const Icon(Icons.timer_rounded,color: Colors.white,),
       ),
     );
   }

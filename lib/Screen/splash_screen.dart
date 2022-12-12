@@ -19,11 +19,8 @@ class OpenScreen extends StatelessWidget {
           loaderColor: Colors.black,
           loadingText:  const Text('Loading...', style: TextStyle(color: Colors.black, fontSize: 25),),
           durationInSeconds: 3,
-          navigator:SignUp(),
+          navigator: const SignUp(),
           backgroundColor: Colors.white,
-
-
-
         ),
       ),
     );
