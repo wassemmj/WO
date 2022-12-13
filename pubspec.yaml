@@ -24,6 +24,7 @@ dependencies:
   intl:
   circular_bottom_navigation: ^2.3.0
   easy_splash_screen: ^1.0.4
+  flutter_rating_bar: ^4.0.1
 
 
 
