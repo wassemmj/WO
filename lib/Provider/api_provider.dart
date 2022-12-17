@@ -10,6 +10,7 @@ import '../Models/log_in_model.dart';
 class ApiProvider with ChangeNotifier {
   bool isLoading = false;
   bool isBack = false;
+  String token = '';
 
   Future<http.Response> register(SingUpModel singUpModel) async {
     isLoading = false;
@@ -55,11 +56,39 @@ class ApiProvider with ChangeNotifier {
       print(response.body);
     }
     isLoading = false;
+    Map<String,dynamic> map = jsonDecode(response.body);
+    token = map['access_token'];
+    notifyListeners();
     return response;
   }
 
   Future setData(bool t) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('login', t);
+  }
+
+  Future<http.Response> logOut() async {
+    isLoading = false;
+    isBack = false;
+    isLoading = true;
+    notifyListeners();
+    http.Response response = await http.post(
+      Uri.parse('http://192.168.104.117:8000/api/auth/logout'),
+      headers: {
+        'Accept': 'application/json',
+      },
+      body: {
+        'token' : token,
+      },
+    );
+    if (response.statusCode == 200) {
+      isBack = true;
+      setData(false);
+      //print(response.body);
+    }else {
+      print(response.body);
+    }
+    isLoading = false;
+    return response;
   }
 }
