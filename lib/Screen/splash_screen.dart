@@ -1,11 +1,25 @@
-
-
-import 'package:cons_app/Screen/singup_screen.dart';
+import 'package:cons_app/Screen/login_screen.dart';
+import 'package:cons_app/Screen/tabs_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_splash_screen/easy_splash_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class OpenScreen extends StatelessWidget {
+class OpenScreen extends StatefulWidget {
   const OpenScreen({Key? key}) : super(key: key);
+
+  @override
+  State<OpenScreen> createState() => _OpenScreenState();
+}
+
+class _OpenScreenState extends State<OpenScreen> {
+
+  bool t = false;
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +33,17 @@ class OpenScreen extends StatelessWidget {
           loaderColor: Colors.black,
           loadingText:  const Text('Loading...', style: TextStyle(color: Colors.black, fontSize: 25),),
           durationInSeconds: 3,
-          navigator: const SignUp(),
+          navigator: (!t) ? const LoginScreen():const TabsScreen(),
           backgroundColor: Colors.white,
         ),
       ),
     );
+  }
+
+  void getData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      t = prefs.getBool('login')!;
+    });
   }
 }

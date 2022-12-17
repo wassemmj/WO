@@ -1,8 +1,13 @@
+import 'dart:convert';
+
+import 'package:cons_app/Models/sing_up_model.dart';
+import 'package:cons_app/Provider/api_provider.dart';
 import 'package:cons_app/Screen/expert_profile_screen.dart';
 import 'package:cons_app/Screen/login_screen.dart';
 import 'package:cons_app/Screen/tabs_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -202,6 +207,7 @@ class _SignUpState extends State<SignUp> {
                   ),
                   const SizedBox(height: 20),
                   InkWell (
+                    onTap: _registration,
                     child: Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
@@ -225,31 +231,6 @@ class _SignUpState extends State<SignUp> {
                         ),
                       ),
                     ),
-                    onTap: () {
-                      if(_formKey.currentState!.validate()) {
-                        _formKey.currentState!.save();
-                        if(!isExpert) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Register Successfully",style: TextStyle(fontSize: 15),),
-                                duration: Duration(seconds: 1),
-                              )
-                          );
-                          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_)=>const TabsScreen()));
-                        }
-                        if(isExpert) {
-                          var name = userNameController.value.text.split(' ');
-                          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_)=>ExpertProfileScreen(name: name[0],)));
-                        }
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Try Again!",style: TextStyle(fontSize: 15),),
-                              duration: Duration(seconds: 1),
-                            )
-                        );
-                      }
-                    },
                   ),
                   const SizedBox(height: 15),
                   Row(
@@ -318,5 +299,42 @@ class _SignUpState extends State<SignUp> {
         ),
       ),
     );
+  }
+
+  Future<void> _registration() async {
+    String name = userNameController.text.trim();
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+    String confirmedPassword = confirmPasswordController.text.trim();
+    SingUpModel singUpModel = SingUpModel(name: name, email: email, password: password, confirmedPassword: confirmedPassword);
+    var provider = Provider.of<ApiProvider>(context,listen: false);
+    var r = await provider.register(singUpModel);
+    if(_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      if(provider.isBack) {
+        if(r.body[4]=="s"){
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Register Successfully",style: TextStyle(fontSize: 15),),
+                duration: Duration(seconds: 1),
+              )
+          );
+          if(isExpert) {
+            var name = userNameController.value.text.split(' ');
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_)=>ExpertProfileScreen(name: name[0],)));
+          } else {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_)=>const TabsScreen()));
+          }
+        }
+        else {
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('the email has been taken',style: TextStyle(fontSize: 15),),
+                duration: Duration(seconds: 1),
+              )
+          );
+        }
+      }
+    }
   }
 }

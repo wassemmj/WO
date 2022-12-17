@@ -1,0 +1,65 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../Models/sing_up_model.dart';
+import '../Models/log_in_model.dart';
+
+class ApiProvider with ChangeNotifier {
+  bool isLoading = false;
+  bool isBack = false;
+
+  Future<http.Response> register(SingUpModel singUpModel) async {
+    isLoading = false;
+    isBack = false;
+    isLoading = true;
+    notifyListeners();
+    http.Response response = await http.post(
+        Uri.parse('http://192.168.104.117:8000/api/auth/register'),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(singUpModel.toJson()),
+      );
+    if (response.statusCode == 201) {
+      isBack = true;
+      //print(response.body);
+    }else {
+      print(response.body);
+    }
+    isLoading = false;
+    return response;
+  }
+
+  Future<http.Response> login(LogInModel logInModel) async {
+    isLoading = false;
+    isBack = false;
+    isLoading = true;
+    notifyListeners();
+    http.Response response = await http.post(
+      Uri.parse('http://192.168.104.117:8000/api/auth/login'),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(logInModel.toJson()),
+    );
+    if (response.statusCode == 200) {
+      isBack = true;
+      setData(true);
+      //print(response.body);
+    }else {
+      print(response.body);
+    }
+    isLoading = false;
+    return response;
+  }
+
+  Future setData(bool t) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('login', t);
+  }
+}

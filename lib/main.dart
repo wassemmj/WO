@@ -1,10 +1,17 @@
-import 'package:cons_app/Screen/login_screen.dart';
+import 'package:cons_app/Provider/api_provider.dart';
 import 'package:cons_app/Screen/splash_screen.dart';
-import 'package:cons_app/Screen/tabs_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ApiProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -16,7 +23,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Colors.purpleAccent,
-        colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.purple),
+        colorScheme:
+            ColorScheme.fromSwatch().copyWith(secondary: Colors.purple),
         scaffoldBackgroundColor: Colors.grey.shade100,
         primarySwatch: Colors.grey,
       ),

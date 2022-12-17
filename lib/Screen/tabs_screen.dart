@@ -4,6 +4,7 @@ import 'package:cons_app/Screen/favorites_screen.dart';
 import 'package:cons_app/Widget/MyDrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({Key? key}) : super(key: key);
