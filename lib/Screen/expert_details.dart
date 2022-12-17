@@ -1,3 +1,4 @@
+import 'package:cons_app/Screen/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -37,7 +38,7 @@ class _ExpertDetailsState extends State<ExpertDetails> {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () =>Navigator.of(context).push(MaterialPageRoute(builder: (_)=>const ChatScreen())),
             tooltip: "chat with expert",
             icon: const Icon(Icons.message_outlined),
           ),

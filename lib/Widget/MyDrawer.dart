@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../Provider/api_provider.dart';
+import '../Provider/language_provider.dart';
 import '../Screen/reservation_screen.dart';
 
 class MyDrawer extends StatefulWidget {
@@ -19,112 +20,176 @@ class MyDrawer extends StatefulWidget {
 class _MyDrawerState extends State<MyDrawer> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Drawer(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              children: [
-                Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Colors.purple, Colors.white, Colors.white],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+    var lan = Provider.of<LanguageProvider>(context, listen: true);
+    return Directionality(
+      textDirection: lan.isEn?TextDirection.ltr:TextDirection.rtl,
+      child: SafeArea(
+        child: Drawer(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.purple, Colors.white, Colors.white],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
                     ),
-                  ),
-                  padding: const EdgeInsets.all(20),
-                  child: Row(
-                    children: [
-                      Container(
-                        decoration: const BoxDecoration(
-                          color: Colors.white70,
-                          shape: BoxShape.circle,
-                        ),
-                        child: ClipOval(
-                          child: SizedBox.fromSize(
-                            size: const Size.fromRadius(30),
-                            child: Image.asset(
-                              'images/i.png',
-                              fit: BoxFit.cover,
+                    padding: const EdgeInsets.all(20),
+                    child: Row(
+                      children: [
+                        Container(
+                          decoration: const BoxDecoration(
+                            color: Colors.white70,
+                            shape: BoxShape.circle,
+                          ),
+                          child: ClipOval(
+                            child: SizedBox.fromSize(
+                              size: const Size.fromRadius(30),
+                              child: Image.asset(
+                                'images/i.png',
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 20),
-                      Text(
-                        widget.name,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Colors.black54,
-                          fontSize: 25,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: InkWell(
-                    onTap: ()=>Navigator.of(context).push(MaterialPageRoute(builder: (_)=>const ReservationsScreen())),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
+                        const SizedBox(width: 20),
                         Text(
-                          'Reservation',
-                          style: TextStyle(
+                          widget.name,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
                             color: Colors.black54,
-                              fontSize: 25,
-                              fontWeight: FontWeight.w500,
+                            fontSize: 25,
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
-                        Icon(
-                          Icons.access_time_rounded,
-                          size: 25,
-                          color: Colors.black54,
-                        )
                       ],
                     ),
                   ),
-                ),
-                const Divider(thickness: 1,),
-                Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: InkWell(
-                    onTap: logout,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text(
-                          'Log Out',
-                          style: TextStyle(
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: InkWell(
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) => const ReservationsScreen())),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: const [
+                          Text(
+                            'Reservation',
+                            style: TextStyle(
+                              color: Colors.black54,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          Icon(
+                            Icons.access_time_rounded,
+                            size: 25,
                             color: Colors.black54,
-                              fontSize: 25,
-                              fontWeight: FontWeight.w500,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  const Divider(thickness: 1),
+                  Container(
+                    alignment: lan.isEn? Alignment.centerLeft:Alignment.centerRight,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(lan.getText('drawer_switch_title')as String,
+                      style: const TextStyle(
+                        color: Colors.black54,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: (lan.isEn ? 0 : 20),
+                      left: (lan.isEn ? 20 : 0),
+                      bottom: 20,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          lan.getText('drawer_switch_item2') as String,
+                          style: const TextStyle(
+                            color: Colors.black54,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
-                        Icon(
-                          Icons.logout,
-                          size: 25,
-                          color: Colors.black54,
-                        )
+                        Switch(
+                          value:
+                              Provider.of<LanguageProvider>(context, listen: true)
+                                  .isEn,
+                          onChanged: (newLan) {
+                            Provider.of<LanguageProvider>(context, listen: false)
+                                .changeLan(newLan);
+                            Navigator.of(context).pop();
+                          },
+                          activeColor: Colors.purple.withOpacity(0.7),
+                          inactiveTrackColor:
+                              Provider.of<LanguageProvider>(context, listen: true)
+                                      .isEn
+                                  ? Colors.white
+                                  : Colors.grey,
+                        ),
+                        Text(
+                          lan.getText('drawer_switch_item1') as String,
+                          style: const TextStyle(
+                            color: Colors.black54,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                ),
-              ],
-            ),
-            Container(
-                padding: const EdgeInsets.all(25),
-                width: double.infinity,
-                color: Colors.purple.withOpacity(0.8),
-                child: const Text(
-                  'Money                15000',
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.w400,color: Colors.white),
-                )),
-          ],
+                  const Divider(thickness: 1),
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: InkWell(
+                      onTap: logout,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: const [
+                          Text(
+                            'Log Out',
+                            style: TextStyle(
+                              color: Colors.black54,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          Icon(
+                            Icons.logout,
+                            size: 25,
+                            color: Colors.black54,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                  padding: const EdgeInsets.all(25),
+                  width: double.infinity,
+                  color: Colors.purple.withOpacity(0.8),
+                  child: const Text(
+                    'Money                15000',
+                    style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white),
+                  )),
+            ],
+          ),
         ),
       ),
     );
