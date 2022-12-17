@@ -85,7 +85,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 color: Colors.purple.withOpacity(0.8),
                 child: const Text(
                   'Money                15000',
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold,color: Colors.black12),
                 ))
           ],
         ),
