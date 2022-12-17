@@ -82,7 +82,7 @@ class _MyDrawerState extends State<MyDrawer> {
             Container(
                 padding: const EdgeInsets.all(25),
                 width: double.infinity,
-                color: Colors.purple,
+                color: Colors.purple.withOpacity(0.8),
                 child: const Text(
                   'Money                15000',
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
