@@ -12,13 +12,15 @@ class ApiProvider with ChangeNotifier {
   bool isBack = false;
   String token = '';
 
+  String url = 'http://192.168.1.107:8000';
+
   Future<http.Response> register(SingUpModel singUpModel) async {
     isLoading = false;
     isBack = false;
     isLoading = true;
     notifyListeners();
     http.Response response = await http.post(
-        Uri.parse('http://192.168.104.117:8000/api/auth/register'),
+        Uri.parse('$url/api/auth/register'),
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
@@ -41,7 +43,7 @@ class ApiProvider with ChangeNotifier {
     isLoading = true;
     notifyListeners();
     http.Response response = await http.post(
-      Uri.parse('http://192.168.104.117:8000/api/auth/login'),
+      Uri.parse('$url/api/auth/login'),
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -73,7 +75,7 @@ class ApiProvider with ChangeNotifier {
     isLoading = true;
     notifyListeners();
     http.Response response = await http.post(
-      Uri.parse('http://192.168.104.117:8000/api/auth/logout'),
+      Uri.parse('$url/api/auth/logout'),
       headers: {
         'Accept': 'application/json',
       },

@@ -12,6 +12,7 @@ class ExpertDetails extends StatefulWidget {
 }
 
 class _ExpertDetailsState extends State<ExpertDetails> {
+  bool fav = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,6 +21,12 @@ class _ExpertDetailsState extends State<ExpertDetails> {
         backgroundColor: Colors.purple.withOpacity(0.8),
         elevation: 0,
         actions: [
+          IconButton(
+            onPressed: ()=>setState(()=>fav = !fav),
+            icon: Icon(fav
+                ? Icons.star
+                : Icons.star_border),
+          ),
           IconButton(
             onPressed: () => Navigator.of(context)
                 .push(MaterialPageRoute(builder: (_) => const ReservationScreen()),),
@@ -301,187 +308,189 @@ class _ReservationScreenState extends State<ReservationScreen> {
         backgroundColor: Colors.purple.withOpacity(0.8),
         elevation: 0,
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-            gradient: LinearGradient(
-          colors: [
-            Colors.purple,
-            Colors.white,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.center,
-        )),
-        padding: const EdgeInsets.all(25),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Date :",
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
+      body: SafeArea(
+        child: Container(
+          decoration: const BoxDecoration(
+              gradient: LinearGradient(
+            colors: [
+              Colors.purple,
+              Colors.white,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.center,
+          )),
+          padding: const EdgeInsets.all(25),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Date :",
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                Text(
-                  DateFormat.yMd().format(_selectedDate),
-                  style: const TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
+                  Text(
+                    DateFormat.yMd().format(_selectedDate),
+                    style: const TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                IconButton(
-                    onPressed: () async {
-                      DateTime? pickedDate = await showDatePicker(
-                        context: context,
-                        builder: (ctx, w) {
-                          return Theme(
-                              data: Theme.of(context).copyWith(
-                                colorScheme: const ColorScheme.light(
-                                  primary: Colors.purple,
-                                ),
-                                textButtonTheme: TextButtonThemeData(
-                                  style: TextButton.styleFrom(
-                                    primary: Colors.purple, // button text color
+                  IconButton(
+                      onPressed: () async {
+                        DateTime? pickedDate = await showDatePicker(
+                          context: context,
+                          builder: (ctx, w) {
+                            return Theme(
+                                data: Theme.of(context).copyWith(
+                                  colorScheme: const ColorScheme.light(
+                                    primary: Colors.purple,
+                                  ),
+                                  textButtonTheme: TextButtonThemeData(
+                                    style: TextButton.styleFrom(
+                                      primary: Colors.purple, // button text color
+                                    ),
                                   ),
                                 ),
-                              ),
-                              child: w!);
-                        },
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime.now(),
-                        lastDate: DateTime(2025),
-                      );
-                      if (pickedDate != null) {
-                        setState(() => _selectedDate = pickedDate);
-                      }
-                    },
+                                child: w!);
+                          },
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime.now(),
+                          lastDate: DateTime(2025),
+                        );
+                        if (pickedDate != null) {
+                          setState(() => _selectedDate = pickedDate);
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.date_range_rounded,
+                        color: Colors.white,
+                        size: 20,
+                      )),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Time :",
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(
+                    time,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: _getTimeFromUser,
                     icon: const Icon(
-                      Icons.date_range_rounded,
+                      Icons.access_time_rounded,
                       color: Colors.white,
                       size: 20,
-                    )),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Time :",
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                Text(
-                  time,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
+                ],
+              ),
+              const SizedBox(height: 25),
+              InkWell(
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [
+                        Colors.purple,
+                        Colors.white70,
+                        Colors.purple,
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(25),
                   ),
-                ),
-                IconButton(
-                  onPressed: _getTimeFromUser,
-                  icon: const Icon(
-                    Icons.access_time_rounded,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 25),
-            InkWell(
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [
-                      Colors.purple,
-                      Colors.white70,
-                      Colors.purple,
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: const Center(
-                  child: Text(
-                    'Done',
-                    style: TextStyle(
-                      color: Colors.black54,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                  child: const Center(
+                    child: Text(
+                      'Done',
+                      style: TextStyle(
+                        color: Colors.black54,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
                     ),
                   ),
                 ),
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (ctx) {
+                      return AlertDialog(
+                        title: const Text('Rate This Expert',style: TextStyle(color: Colors.purple),),
+                        content: RatingBar(
+                          minRating: 0,
+                          maxRating: 5,
+                          initialRating: 0,
+                          allowHalfRating: true,
+                          ratingWidget: RatingWidget(
+                            full: const Icon(
+                              Icons.star,
+                              color: Colors.yellow,
+                            ),
+                            half: const Icon(Icons.star_half,color: Colors.yellow,),
+                            empty: const Icon(
+                              Icons.star_border,
+                            ),
+                          ),
+                          onRatingUpdate: (double value) => rate = value,
+                          itemCount: 5,
+                          itemSize: 40,
+                          itemPadding: const EdgeInsets.symmetric(horizontal: 4),
+                          glow: false,
+                          updateOnDrag: true,
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                content: Text(
+                                  "Thanks for rating",
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                                duration: Duration(seconds: 1),
+                              ));
+                              Navigator.of(ctx).pop();
+                            },
+                            child: const Text(
+                              'Done',
+                              style: TextStyle(color: Colors.purple, fontSize: 20),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(ctx).pop();
+                            },
+                            child: const Text(
+                              'Cancel',
+                              style: TextStyle(color: Colors.purple, fontSize: 20),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
               ),
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (ctx) {
-                    return AlertDialog(
-                      title: const Text('Rate This Expert',style: TextStyle(color: Colors.purple),),
-                      content: RatingBar(
-                        minRating: 0,
-                        maxRating: 5,
-                        initialRating: 0,
-                        allowHalfRating: true,
-                        ratingWidget: RatingWidget(
-                          full: const Icon(
-                            Icons.star,
-                            color: Colors.yellow,
-                          ),
-                          half: const Icon(Icons.star_half,color: Colors.yellow,),
-                          empty: const Icon(
-                            Icons.star_border,
-                          ),
-                        ),
-                        onRatingUpdate: (double value) => rate = value,
-                        itemCount: 5,
-                        itemSize: 40,
-                        itemPadding: const EdgeInsets.symmetric(horizontal: 4),
-                        glow: false,
-                        updateOnDrag: true,
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                              content: Text(
-                                "Thanks for rating",
-                                style: TextStyle(fontSize: 15),
-                              ),
-                              duration: Duration(seconds: 1),
-                            ));
-                            Navigator.of(ctx).pop();
-                          },
-                          child: const Text(
-                            'Done',
-                            style: TextStyle(color: Colors.purple, fontSize: 20),
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(ctx).pop();
-                          },
-                          child: const Text(
-                            'Cancel',
-                            style: TextStyle(color: Colors.purple, fontSize: 20),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
