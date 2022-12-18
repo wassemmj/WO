@@ -19,8 +19,10 @@ class _OpenScreenState extends State<OpenScreen> {
 
   @override
   void initState() {
+    var lan = Provider.of<LanguageProvider>(context, listen: true);
     super.initState();
     getData();
+    lan.getLan();
   }
 
   @override

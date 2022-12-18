@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LanguageProvider with ChangeNotifier {
-  bool isEn = false;
+  bool isEn = true;
 
   Map<String, Object> textAr = {
     "drawer_item1": "الحجوزات",
