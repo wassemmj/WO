@@ -4,6 +4,9 @@ import 'package:cons_app/Screen/favorites_screen.dart';
 import 'package:cons_app/Widget/MyDrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
+import 'package:provider/provider.dart';
+
+import '../Provider/language_provider.dart';
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({Key? key}) : super(key: key);
@@ -23,6 +26,11 @@ class _TabsScreenState extends State<TabsScreen> {
     'Medical Constructions',
     'Financial Constructions',
     'Medical Constructions',
+    'Medical Constructions',
+    'Financial Constructions',
+    'Medical Constructions',
+    'Financial Constructions',
+    'Medical Constructions',
   ];
 
   @override
@@ -33,82 +41,86 @@ class _TabsScreenState extends State<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var lan = Provider.of<LanguageProvider>(context, listen: true);
     _tabs = [
       {
-        'title': 'Constructions',
+        'title': lan.getText('constructions').toString(),
         'body': ConstructionsScreen(li: constList),
       },
       {
-        'title': 'Favorites',
+        'title': lan.getText('favorites').toString(),
         'body': const FavoritesScreen(
           favoriteList: [],
         ),
       },
     ];
-    return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-              onPressed: () {
-                showSearch(context: context, delegate: MySearchDelegate());
-              },
-              icon: const Icon(Icons.search))
-        ],
-        title: Text(_tabs[_selectedIndex]['title'] as String),
-        centerTitle: true,
-        backgroundColor: Colors.purple.withOpacity(0.8),
-        elevation: 0,
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Container(
-            //color: Colors.white,
-            height: MediaQuery.of(context).size.height,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.purple, Colors.white, Colors.white],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+    return Directionality(
+      textDirection: lan.isEn ? TextDirection.ltr : TextDirection.rtl,
+      child: Scaffold(
+        appBar: AppBar(
+          actions: [
+            IconButton(
+                onPressed: () {
+                  showSearch(context: context, delegate: MySearchDelegate());
+                },
+                icon: const Icon(Icons.search))
+          ],
+          title: Text(_tabs[_selectedIndex]['title'] as String),
+          centerTitle: true,
+          backgroundColor: Colors.purple.withOpacity(0.8),
+          elevation: 0,
+        ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Container(
+              //color: Colors.white,
+              height: MediaQuery.of(context).size.height,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.purple, Colors.white, Colors.white],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
               ),
+              child: _tabs[_selectedIndex]['body'] as Widget,
             ),
-            child: _tabs[_selectedIndex]['body'] as Widget,
           ),
         ),
-      ),
-      bottomNavigationBar: CircularBottomNavigation(
-        barHeight: 60,
-        [
-          TabItem(
-            Icons.category,
-            "Constructions",
-            Colors.purple,
-            labelStyle: const TextStyle(
-              fontWeight: FontWeight.normal,
+        bottomNavigationBar: CircularBottomNavigation(
+          barHeight: 60,
+          [
+            TabItem(
+              Icons.category,
+              lan.getText("constructions").toString(),
+              Colors.purple,
+              labelStyle: const TextStyle(
+                fontWeight: FontWeight.normal,
+              ),
             ),
-          ),
-          TabItem(
-            Icons.favorite,
-            "Favorites",
-            Colors.purple,
-            labelStyle: const TextStyle(
-              fontWeight: FontWeight.normal,
+            TabItem(
+              Icons.favorite,
+              lan.getText("favorites").toString(),
+              Colors.purple,
+              labelStyle: const TextStyle(
+                fontWeight: FontWeight.normal,
+              ),
             ),
-          ),
-        ],
-        controller: _navigationController,
-        selectedPos: _selectedIndex,
-        barBackgroundColor: Colors.white,
-        animationDuration: const Duration(milliseconds: 300),
-        selectedCallback: (selected) {
-          setState(() {
-            _selectedIndex = selected!;
-          });
-        },
-      ),
-      drawer: const MyDrawer(
-        name: 'obada',
-        imgPath:
-            'images/welcome-hand-drawn-lettering-against-watercolor-background-eps-vector-52782797.jpg',
+          ],
+          controller: _navigationController,
+          selectedPos: _selectedIndex,
+          barBackgroundColor: Colors.white,
+          animationDuration: const Duration(milliseconds: 300),
+          selectedCallback: (selected) {
+            setState(() {
+              _selectedIndex = selected!;
+            });
+          },
+        ),
+        drawer: const MyDrawer(
+          name: 'obada',
+          imgPath:
+              'images/welcome-hand-drawn-lettering-against-watercolor-background-eps-vector-52782797.jpg',
+        ),
       ),
     );
   }

@@ -34,6 +34,7 @@ class ApiProvider with ChangeNotifier {
       print(response.body);
     }
     isLoading = false;
+    await login(LogInModel(email: singUpModel.email, password: singUpModel.password));
     return response;
   }
 
@@ -50,16 +51,16 @@ class ApiProvider with ChangeNotifier {
       },
       body: jsonEncode(logInModel.toJson()),
     );
+    Map<String,dynamic> map = jsonDecode(response.body);
     if (response.statusCode == 200) {
       isBack = true;
       setData(true);
+      token = map['access_token'];
       //print(response.body);
     }else {
       print(response.body);
     }
     isLoading = false;
-    Map<String,dynamic> map = jsonDecode(response.body);
-    token = map['access_token'];
     notifyListeners();
     return response;
   }

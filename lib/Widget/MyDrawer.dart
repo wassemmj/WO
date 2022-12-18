@@ -31,11 +31,11 @@ class _MyDrawerState extends State<MyDrawer> {
               Column(
                 children: [
                   Container(
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Colors.purple, Colors.white, Colors.white],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
+                        colors: const [Colors.purple, Colors.white, Colors.white],
+                        begin: lan.isEn? Alignment.topLeft:Alignment.topRight,
+                        end: lan.isEn? Alignment.bottomRight:Alignment.bottomLeft,
                       ),
                     ),
                     padding: const EdgeInsets.all(20),
@@ -76,16 +76,16 @@ class _MyDrawerState extends State<MyDrawer> {
                           builder: (_) => const ReservationsScreen())),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
+                        children: [
                           Text(
-                            'Reservation',
-                            style: TextStyle(
+                            lan.getText('drawer_item1').toString(),
+                            style: const TextStyle(
                               color: Colors.black54,
                               fontSize: 18,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
-                          Icon(
+                          const Icon(
                             Icons.access_time_rounded,
                             size: 25,
                             color: Colors.black54,
@@ -157,16 +157,16 @@ class _MyDrawerState extends State<MyDrawer> {
                       onTap: logout,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
+                        children: [
                           Text(
-                            'Log Out',
-                            style: TextStyle(
+                            lan.getText('drawer_item2') as String,
+                            style: const  TextStyle(
                               color: Colors.black54,
                               fontSize: 18,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
-                          Icon(
+                          const Icon(
                             Icons.logout,
                             size: 25,
                             color: Colors.black54,
@@ -181,9 +181,9 @@ class _MyDrawerState extends State<MyDrawer> {
                   padding: const EdgeInsets.all(25),
                   width: double.infinity,
                   color: Colors.purple.withOpacity(0.8),
-                  child: const Text(
-                    'Money                15000',
-                    style: TextStyle(
+                  child: Text(
+                    '${lan.getText('drawer_item3')}  :             15000',
+                    style: const TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.w400,
                         color: Colors.white),

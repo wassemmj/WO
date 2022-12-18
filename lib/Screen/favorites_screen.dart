@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../Provider/language_provider.dart';
 
 class FavoritesScreen extends StatelessWidget {
   const FavoritesScreen({Key? key, required this.favoriteList}) : super(key: key);
@@ -7,11 +10,12 @@ class FavoritesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var lan = Provider.of<LanguageProvider>(context, listen: true);
     if (favoriteList.isEmpty) {
-      return const Padding(
-        padding: EdgeInsets.only(bottom: 200),
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 200),
         child: Center(
-          child: Text('You have no favorites yet!',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w400,),),
+          child: Text(lan.getText('favorites_item1') as String,style: const TextStyle(fontSize: 18,fontWeight: FontWeight.w400,),),
         ),
       );
     }
