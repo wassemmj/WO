@@ -28,6 +28,7 @@ dependencies:
   provider:
   http:
   shared_preferences:
+  time_range: ^1.1.0
 
 
 

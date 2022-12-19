@@ -12,7 +12,7 @@ class ApiProvider with ChangeNotifier {
   bool isBack = false;
   String token = '';
 
-  String url = 'http://192.168.1.107:8000';
+  String url = 'http://192.168.1.101:8000';
 
   Future<http.Response> register(SingUpModel singUpModel) async {
     isLoading = false;

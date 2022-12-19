@@ -19,10 +19,9 @@ class _OpenScreenState extends State<OpenScreen> {
 
   @override
   void initState() {
-    var lan = Provider.of<LanguageProvider>(context, listen: true);
     super.initState();
     getData();
-    lan.getLan();
+    Provider.of<LanguageProvider>(context,listen: false).getLan();
   }
 
   @override
@@ -55,7 +54,7 @@ class _OpenScreenState extends State<OpenScreen> {
   void getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      t = prefs.getBool('login')!;
+      t = prefs.getBool('login')??false;
     });
   }
 }

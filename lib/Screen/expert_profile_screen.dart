@@ -471,7 +471,7 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
     TimeOfDay? pickedTime = await showTimePicker(
       initialEntryMode: TimePickerEntryMode.input,
       context: context,
-      initialTime: TimeOfDay.fromDateTime(DateTime(2022)),
+      initialTime: TimeOfDay.fromDateTime(DateTime.parse('2012-02-27 9:27:00')),
     );
     String formattedTime = pickedTime!.format(context);
     if (isStart) {
