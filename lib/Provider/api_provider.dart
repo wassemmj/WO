@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 import '../Models/sing_up_model.dart';
 import '../Models/log_in_model.dart';
@@ -67,7 +68,12 @@ class ApiProvider with ChangeNotifier {
 
   Future setData(bool t) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('login', t);
+    DateTime? expirationDate = token.isNotEmpty? JwtDecoder.getExpirationDate(token):null;
+    if(t&&expirationDate!=null&&expirationDate.isAfter(DateTime.now())) {
+      prefs.setBool('login', t);
+    } else {
+      prefs.setBool('login', false);
+    }
   }
 
   Future<http.Response> logOut() async {
@@ -84,10 +90,39 @@ class ApiProvider with ChangeNotifier {
         'token' : token,
       },
     );
+    // Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
+    // print(decodedToken);
+    // DateTime expirationDate = JwtDecoder.getExpirationDate(token);
+    // print(expirationDate);
     if (response.statusCode == 200) {
       isBack = true;
       setData(false);
-      //print(response.body);
+      print(response.body);
+      token = '';
+    }else {
+      print(response.body);
+    }
+    isLoading = false;
+    return response;
+  }
+
+  Future<http.Response> category(bool isEn) async {
+    isLoading = false;
+    isBack = false;
+    isLoading = true;
+    http.Response response = await http.post(
+      Uri.parse('$url/api/category'),
+      headers: {
+        'Accept': 'application/json',
+      },
+      body: {
+        'token' : token,
+        'language': isEn ? '':'ar',
+      },
+    );
+    if(response.statusCode == 200) {
+      isBack = true;
+      print(response.body);
     }else {
       print(response.body);
     }

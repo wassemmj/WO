@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cons_app/Models/sing_up_model.dart';
 import 'package:cons_app/Provider/api_provider.dart';
 import 'package:cons_app/Screen/expert_profile_screen.dart';
@@ -315,24 +317,38 @@ class _SignUpState extends State<SignUp> {
     var r = await provider.register(singUpModel);
     if(_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+      var map = jsonDecode(r.body);
       if(provider.isBack) {
         if(r.body[4]=="s"){
+          print(map['message']);
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Register Successfully',textDirection: TextDirection.ltr,style: TextStyle(fontSize: 15),),
+                duration: Duration(seconds: 1),
+              )
+          );
           if(isExpert) {
             var name = userNameController.value.text.split(' ');
             Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_)=>ExpertProfileScreen(name: name[0],)));
           } else {
             Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_)=>const TabsScreen()));
           }
-        }
+        }else {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(map['message'],textDirection: TextDirection.ltr,style: const TextStyle(fontSize: 15),),
+                duration: const Duration(seconds: 1),
+              )
+          );
+        }}
         else {
           ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('the email has been taken',textDirection: TextDirection.ltr,style: TextStyle(fontSize: 15),),
-                duration: Duration(seconds: 1),
+              SnackBar(
+                content: Text(map['message'],textDirection: TextDirection.ltr,style: const TextStyle(fontSize: 15),),
+                duration: const Duration(seconds: 1),
               )
           );
         }
       }
     }
   }
-}

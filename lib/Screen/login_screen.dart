@@ -207,6 +207,12 @@ class _LoginScreenState extends State<LoginScreen> {
       Map<String,dynamic> map = jsonDecode(r.body);
       print(map);
       if (provider.isBack) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Login Successfully',textDirection: TextDirection.ltr,style: TextStyle(fontSize: 15),),
+              duration: Duration(seconds: 1),
+            )
+        );
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (_) => const TabsScreen()));
       } else {

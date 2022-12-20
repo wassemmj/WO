@@ -45,7 +45,7 @@ class _TabsScreenState extends State<TabsScreen> {
     _tabs = [
       {
         'title': lan.getText('constructions').toString(),
-        'body': ConstructionsScreen(li: constList),
+        'body': const ConstructionsScreen(),
       },
       {
         'title': lan.getText('favorites').toString(),

@@ -2,10 +2,11 @@ import 'package:cons_app/Screen/experts_screen.dart';
 import 'package:flutter/material.dart';
 
 class Construction extends StatelessWidget {
-  const Construction({Key? key, required this.constructionName})
+  const Construction({Key? key, required this.constructionName, required this.id})
       : super(key: key);
 
   final String constructionName;
+  final int id;
 
   @override
   Widget build(BuildContext context) {
