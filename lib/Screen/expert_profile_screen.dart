@@ -1,11 +1,15 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:cons_app/Models/expert_models.dart';
 import 'package:cons_app/Screen/tabs_screen.dart';
+import 'package:duration_picker/duration_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
+import '../Provider/api_provider.dart';
 import '../Provider/language_provider.dart';
 
 class ExpertProfileScreen extends StatefulWidget {
@@ -22,12 +26,10 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
   final ImagePicker picker = ImagePicker();
   File? pickedImage;
 
-  String? _startTime;
-  String? _endTime;
-
   var addressController = TextEditingController();
   var phoneController = TextEditingController();
   var skillController = TextEditingController();
+  Duration? duration;
 
   bool _isC1 = false;
   bool _isC2 = false;
@@ -35,8 +37,25 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
   bool _isC4 = false;
   bool _isC5 = false;
 
-  String st = 'From';
-  String ed = 'To';
+  List li = [];
+
+  List conId = [];
+
+  List<Map<String, String>> time = [
+    {"day": "Saturday", "start": "from", "end": "to"},
+    {"day": "Sunday", "start": "from", "end": "to"},
+    {"day": "Monday", "start": "from", "end": "to"},
+    {"day": "Tuesday", "start": "from", "end": "to"},
+    {"day": "Wednesday", "start": "from", "end": "to"},
+    {"day": "Thursday", "start": "from", "end": "to"},
+    {"day": "Friday", "start": "from", "end": "to"},
+  ];
+
+  @override
+  void initState() {
+    getCat(true);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +127,7 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                                 backgroundColor:
                                     MaterialStateProperty.all(Colors.purple)),
                             icon: const Icon(Icons.image),
-                            label: Text(lan.isEn?'Image':'صورة'),
+                            label: Text(lan.isEn ? 'Image' : 'صورة'),
                           ),
                         ],
                       ),
@@ -138,11 +157,16 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                       controller: phoneController,
                       keyboardType: TextInputType.number,
                       validator: (val) {
-                        final bool phoneValid = RegExp(r"^[0-9.]").hasMatch(val!);
+                        final bool phoneValid =
+                            RegExp(r"^[0-9.]").hasMatch(val!);
                         if (val.isEmpty) {
-                          return lan.isEn?'phone Number is Required':'الهاتف مطلوب';
+                          return lan.isEn
+                              ? 'phone Number is Required'
+                              : 'الهاتف مطلوب';
                         } else if (!phoneValid || val.length < 10) {
-                          return  lan.isEn?'Not a Valid Phone Number':'الهاتف غير صحيح';
+                          return lan.isEn
+                              ? 'Not a Valid Phone Number'
+                              : 'الهاتف غير صحيح';
                         }
                       },
                       style: const TextStyle(color: Colors.black54),
@@ -172,7 +196,9 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                       controller: addressController,
                       validator: (val) {
                         if (val!.isEmpty) {
-                          return  lan.isEn?'Address is Required':'العنوان مطلوب';
+                          return lan.isEn
+                              ? 'Address is Required'
+                              : 'العنوان مطلوب';
                         }
                       },
                       style: const TextStyle(color: Colors.black54),
@@ -180,11 +206,11 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                     const SizedBox(height: 10),
                     TextFormField(
                       decoration: InputDecoration(
-                        hintText:  lan.isEn?'Enter Skills':'ادخل مهاراتك',
+                        hintText: lan.isEn ? 'Enter Skills' : 'ادخل مهاراتك',
                         hintStyle: const TextStyle(
                           color: Colors.black54,
                         ),
-                        labelText: lan.isEn?'Skills':'المهارات',
+                        labelText: lan.isEn ? 'Skills' : 'المهارات',
                         labelStyle: const TextStyle(
                           color: Colors.purple,
                           fontSize: 20,
@@ -203,7 +229,9 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                       maxLines: 4,
                       validator: (val) {
                         if (val!.isEmpty) {
-                          return lan.isEn?'Skill is Required':'المهارات مطلوبة';
+                          return lan.isEn
+                              ? 'Skill is Required'
+                              : 'المهارات مطلوبة';
                         }
                       },
                       style: const TextStyle(color: Colors.black54),
@@ -213,12 +241,48 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          lan.isEn?'availability :':'متواجد : ',
+                          lan.isEn ? 'availability :' : 'متواجد : ',
                           style: const TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () async {
+                            Duration? d = await showDurationPicker(
+                              context: context,
+                              initialTime: const Duration(minutes: 0),
+                            );
+                            setState(() {
+                              duration = d;
+                            });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text("duration $d")));
+                          },
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.purple),
+                            foregroundColor:
+                                MaterialStateProperty.all(Colors.white),
+                          ),
+                          child:
+                              Text(lan.isEn ? 'session duration' : 'مدة جلستك'),
+                        ),
+                        const SizedBox(
+                          width: 25,
+                        ),
+                        duration != null
+                            ? Text(
+                                "${duration?.inMinutes.toString()} Min",
+                                style: const TextStyle(fontSize: 15),
+                              )
+                            : Container(),
                       ],
                     ),
                     const SizedBox(height: 10),
@@ -232,13 +296,13 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                       ),
                       child: Column(
                         children: [
-                          buildTime('Sunday'),
-                          buildTime('saturday'),
-                          buildTime('friday'),
-                          buildTime('monday'),
-                          buildTime('tuesday'),
-                          buildTime('wednesday'),
-                          buildTime('thursday'),
+                          buildTime(0),
+                          buildTime(1),
+                          buildTime(2),
+                          buildTime(3),
+                          buildTime(4),
+                          buildTime(5),
+                          buildTime(6),
                         ],
                       ),
                     ),
@@ -247,7 +311,7 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          lan.isEn?'consulting :':' مستشار ب :',
+                          lan.isEn ? 'consulting :' : ' مستشار ب :',
                           style: const TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
@@ -256,85 +320,148 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.purple,
-                        ),
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      child: Column(
-                        children: [
-                          CheckboxListTile(
-                            title: const Text(
-                              'c1',
-                              style:
-                                  TextStyle(color: Colors.purple, fontSize: 20),
-                            ),
-                            value: _isC1,
-                            activeColor: Colors.purple,
-                            checkColor: Colors.white,
-                            onChanged: (val) => setState(() {
-                              _isC1 = val!;
-                            }),
-                          ),
-                          CheckboxListTile(
-                            title: const Text(
-                              'c2',
-                              style:
-                                  TextStyle(color: Colors.purple, fontSize: 20),
-                            ),
-                            value: _isC2,
-                            activeColor: Colors.purple,
-                            checkColor: Colors.white,
-                            onChanged: (val) => setState(() {
-                              _isC2 = val!;
-                            }),
-                          ),
-                          CheckboxListTile(
-                            title: const Text(
-                              'c3',
-                              style:
-                                  TextStyle(color: Colors.purple, fontSize: 20),
-                            ),
-                            value: _isC3,
-                            activeColor: Colors.purple,
-                            checkColor: Colors.white,
-                            onChanged: (val) => setState(() {
-                              _isC3 = val!;
-                            }),
-                          ),
-                          CheckboxListTile(
-                            title: const Text(
-                              'c4',
-                              style:
-                                  TextStyle(color: Colors.purple, fontSize: 20),
-                            ),
-                            value: _isC4,
-                            activeColor: Colors.purple,
-                            checkColor: Colors.white,
-                            onChanged: (val) => setState(() {
-                              _isC4 = val!;
-                            }),
-                          ),
-                          CheckboxListTile(
-                            title: const Text(
-                              'c5',
-                              style:
-                                  TextStyle(color: Colors.purple, fontSize: 20),
-                            ),
-                            value: _isC5,
-                            activeColor: Colors.purple,
-                            checkColor: Colors.white,
-                            onChanged: (val) => setState(() {
-                              _isC5 = val!;
-                            }),
-                          ),
-                        ],
-                      ),
-                    ),
+                    FutureBuilder(
+                        future: getCat(lan.isEn),
+                        builder: (context, snapshot) {
+                          return snapshot.connectionState ==
+                                  ConnectionState.waiting
+                              ? const Center(child: CircularProgressIndicator())
+                              : Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.purple,
+                                    ),
+                                    borderRadius: BorderRadius.circular(25),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      CheckboxListTile(
+                                          title: Text(
+                                            lan.isEn
+                                                ? li[0]['titleE']
+                                                : li[0]['titleA'],
+                                            style: const TextStyle(
+                                                color: Colors.purple,
+                                                fontSize: 20),
+                                          ),
+                                          value: _isC1,
+                                          activeColor: Colors.purple,
+                                          checkColor: Colors.white,
+                                          onChanged: (val) {
+                                            setState(() {
+                                              _isC1 = val!;
+                                            });
+                                            if (val!) {
+                                              conId.add(li[0]['id']);
+                                            } else {
+                                              if (conId.contains(li[0]['id'])) {
+                                                conId.remove(li[0]['id']);
+                                              }
+                                            }
+                                          }),
+                                      CheckboxListTile(
+                                          title: Text(
+                                            lan.isEn
+                                                ? li[1]['titleE']
+                                                : li[1]['titleA'],
+                                            style: const TextStyle(
+                                                color: Colors.purple,
+                                                fontSize: 20),
+                                          ),
+                                          value: _isC2,
+                                          activeColor: Colors.purple,
+                                          checkColor: Colors.white,
+                                          onChanged: (val) {
+                                            setState(() {
+                                              _isC2 = val!;
+                                            });
+                                            if (val!) {
+                                              conId.add(li[1]['id']);
+                                            } else {
+                                              if (conId.contains(li[1]['id'])) {
+                                                conId.remove(li[1]['id']);
+                                              }
+                                            }
+                                          }),
+                                      CheckboxListTile(
+                                          title: Text(
+                                            lan.isEn
+                                                ? li[2]['titleE']
+                                                : li[2]['titleA'],
+                                            style: const TextStyle(
+                                                color: Colors.purple,
+                                                fontSize: 20),
+                                          ),
+                                          value: _isC3,
+                                          activeColor: Colors.purple,
+                                          checkColor: Colors.white,
+                                          onChanged: (val) {
+                                            setState(() {
+                                              _isC3 = val!;
+                                            });
+                                            if (val!) {
+                                              conId.add(li[2]['id']);
+                                            } else {
+                                              if (conId.contains(li[2]['id'])) {
+                                                conId.remove(li[2]['id']);
+                                              }
+                                            }
+                                          }),
+                                      CheckboxListTile(
+                                          title: Text(
+                                            lan.isEn
+                                                ? li[3]['titleE']
+                                                : li[3]['titleA'],
+                                            style: const TextStyle(
+                                                color: Colors.purple,
+                                                fontSize: 20),
+                                          ),
+                                          value: _isC4,
+                                          activeColor: Colors.purple,
+                                          checkColor: Colors.white,
+                                          onChanged: (val) {
+                                            setState(() {
+                                              _isC4 = val!;
+                                            });
+                                            if (val!) {
+                                              conId.add(li[3]['id']);
+                                            } else {
+                                              if (conId.contains(li[3]['id'])) {
+                                                conId.remove(li[3]['id']);
+                                              }
+                                            }
+                                          }),
+                                      CheckboxListTile(
+                                          title: Text(
+                                            lan.isEn
+                                                ? li[4]['titleE']
+                                                : li[4]['titleA'],
+                                            style: const TextStyle(
+                                                color: Colors.purple,
+                                                fontSize: 20),
+                                          ),
+                                          value: _isC5,
+                                          activeColor: Colors.purple,
+                                          checkColor: Colors.white,
+                                          onChanged: (val) {
+                                            setState(() {
+                                              _isC5 = val!;
+                                            });
+                                            if (val!) {
+                                              conId.add(li[4]['id']);
+                                            } else {
+                                              if (conId.contains(li[4]['id'])) {
+                                                conId.remove(li[4]['id']);
+                                              }
+                                            }
+                                          }),
+                                    ],
+                                  ),
+                                );
+                        }),
                     const SizedBox(height: 20),
                     InkWell(
+                      onTap: addExpert,
                       child: Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
@@ -349,7 +476,7 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                         ),
                         child: Center(
                           child: Text(
-                            lan.isEn?'Done':'تم',
+                            lan.isEn ? 'Done' : 'تم',
                             style: const TextStyle(
                               color: Colors.black54,
                               fontWeight: FontWeight.bold,
@@ -358,61 +485,6 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                           ),
                         ),
                       ),
-                      onTap: () {
-                        if (_startTime == null || _endTime == null) {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(
-                            content: Text(
-                              lan.isEn? "You Should fill all item":'يجب ملئ كل القيم',
-                              style:const TextStyle(fontSize: 15),
-                            ),
-                            duration: const Duration(seconds: 1),
-                          ));
-                          return;
-                        }
-                        if (_isC1 == false &&
-                            _isC2 == false &&
-                            _isC3 == false &&
-                            _isC4 == false &&
-                            _isC5 == false) {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(
-                            content: Text(
-                              lan.isEn?"You Should choose one or more consultation":'ينصح باختيار واحدة على الاقل',
-                              style: const TextStyle(fontSize: 15),
-                            ),
-                            duration: const Duration(seconds: 1),
-                          ));
-                          return;
-                        }
-                        if (_formKey.currentState!.validate()) {
-                          _formKey.currentState!.save();
-                          Navigator.of(context).pushReplacement(MaterialPageRoute(
-                              builder: (_) => const TabsScreen()));
-                          phoneController.clear();
-                          addressController.clear();
-                          skillController.clear();
-                          setState(() {
-                            _isC1 = false;
-                            _isC2 = false;
-                            _isC3 = false;
-                            _isC4 = false;
-                            _isC5 = false;
-                            st = 'From';
-                            ed = 'To';
-                          });
-                        } else {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                            content: Text(
-                              "Try Again!",
-                              textDirection: TextDirection.ltr,
-                              style: TextStyle(fontSize: 15),
-                            ),
-                            duration: Duration(seconds: 1),
-                          ));
-                        }
-                      },
                     ),
                   ],
                 ),
@@ -424,13 +496,85 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
     );
   }
 
-  Widget buildTime(String day,) {
+  Future<void> addExpert() async {
+    String mobile = phoneController.text;
+    String address = addressController.text;
+    String brief = skillController.text;
+    var provider = Provider.of<ApiProvider>(context,listen: false);
+    var lan = Provider.of<LanguageProvider>(context,listen: false);
+    var dd = _duration(duration!);
+    ExpertModels expertModels = ExpertModels(mobile: mobile, address: address, brief: brief, sessionPeriod: duration.toString(), time: time, consId: conId,pickedImage: pickedImage);
+    var r = await provider.registerExpert(expertModels);
+    // print(li);
+    // print(conId);
+    // print(time);
+    // print(duration!.inMinutes.toString());
+    if (time.every((element) => element['start']=='from'||element['end']=='to')) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+          lan.isEn
+              ? "You Should fill all item"
+              : 'يجب ملئ كل القيم',
+          style: const TextStyle(fontSize: 15),
+        ),
+        duration: const Duration(seconds: 1),
+      ));
+      return;
+    }
+    if (conId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+          lan.isEn
+              ? "You Should choose one or more consultation"
+              : 'ينصح باختيار واحدة على الاقل',
+          style: const TextStyle(fontSize: 15),
+        ),
+        duration: const Duration(seconds: 1),
+      ));
+      return;
+    }
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      if(provider.isBack) {
+        var map = jsonDecode(r.body);
+        print(map);
+        print(r.body);
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(
+          content: Text(
+            map['message'],
+            textDirection: TextDirection.ltr,
+            style: const TextStyle(fontSize: 15),
+          ),
+          duration: const Duration(seconds: 1),
+        ));
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+                builder: (_) => const TabsScreen()));
+      } else {
+        print(r.body);
+      }
+      
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(
+        content: Text(
+          "Try Again!",
+          textDirection: TextDirection.ltr,
+          style: TextStyle(fontSize: 15),
+        ),
+        duration: Duration(seconds: 1),
+      ));
+    }
+  }
+
+  Widget buildTime(int i) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Expanded(
           child: Text(
-            '$day :',
+            time[i]['day']!,
             style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w600,
@@ -439,26 +583,48 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
         ),
         Expanded(
           child: TextButton.icon(
-            onPressed: () => _getTimeFromUser(isStart: true),
+            onPressed: () async {
+              TimeOfDay? pickedTime = await showTimePicker(
+                initialEntryMode: TimePickerEntryMode.input,
+                context: context,
+                initialTime: TimeOfDay.fromDateTime(DateTime.now()),
+              );
+              if (pickedTime == null) return;
+              String formattedTime = pickedTime.format(context);
+              setState(() {
+                time[i]['start'] = formattedTime;
+              });
+            },
             icon: const Icon(
               Icons.access_time_rounded,
               color: Colors.purple,
             ),
             label: Text(
-              st,
+              time[i]['start']!,
               style: const TextStyle(color: Colors.purple),
             ),
           ),
         ),
         Expanded(
           child: TextButton.icon(
-            onPressed: () => _getTimeFromUser(isStart: false),
+            onPressed: () async {
+              TimeOfDay? pickedTime = await showTimePicker(
+                initialEntryMode: TimePickerEntryMode.input,
+                context: context,
+                initialTime: TimeOfDay.fromDateTime(DateTime.now()),
+              );
+              if (pickedTime == null) return;
+              String formattedTime = pickedTime.format(context);
+              setState(() {
+                time[i]['end'] = formattedTime;
+              });
+            },
             icon: const Icon(
               Icons.access_time_rounded,
               color: Colors.purple,
             ),
             label: Text(
-              ed,
+              time[i]['end']!,
               style: const TextStyle(color: Colors.purple),
             ),
           ),
@@ -467,23 +633,21 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
     );
   }
 
-  _getTimeFromUser({required bool isStart}) async {
-    TimeOfDay? pickedTime = await showTimePicker(
-      initialEntryMode: TimePickerEntryMode.input,
-      context: context,
-      initialTime: TimeOfDay.fromDateTime(DateTime.parse('2012-02-27 9:27:00')),
-    );
-    String formattedTime = pickedTime!.format(context);
-    if (isStart) {
-      setState(() {
-        _startTime = formattedTime;
-        st = _startTime!;
-      });
+  Future getCat(bool isEn) async {
+    var pr = Provider.of<ApiProvider>(context, listen: false);
+    var response = await pr.category(isEn);
+    if (pr.isBack) {
+      var cat = jsonDecode(response.body);
+      li = cat[0];
+      //return response;
     } else {
-      setState(() {
-        _endTime = formattedTime;
-        ed = _endTime!;
-      });
+      throw Exception('can not load data');
     }
+  }
+
+  String _duration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitMinutes";
   }
 }

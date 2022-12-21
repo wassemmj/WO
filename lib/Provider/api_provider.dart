@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cons_app/Models/expert_models.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,6 +37,37 @@ class ApiProvider with ChangeNotifier {
     }
     isLoading = false;
     await login(LogInModel(email: singUpModel.email, password: singUpModel.password));
+    return response;
+  }
+
+  Future<http.Response> registerExpert(ExpertModels expert) async {
+    isLoading = false;
+    isBack = false;
+    isLoading = true;
+    notifyListeners();
+    http.Response response = await http.post(
+      Uri.parse('$url/api/add-expert'),
+      headers: {
+        'Accept': 'application/json',
+      },
+      body: {
+        "mobile": expert.mobile,
+        "address": expert.address,
+        "brief": expert.brief,
+        "session_period": '02:30',
+        "categoriesIds": expert.consId.toString(),
+        "available": expert.time.toString(),
+        "token":token,
+        'image' : expert.pickedImage
+      },
+    );
+    if (response.statusCode == 200) {
+      isBack = true;
+      print(response.body);
+    }else {
+      print(response.body);
+    }
+    isLoading = false;
     return response;
   }
 

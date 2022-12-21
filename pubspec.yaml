@@ -30,6 +30,7 @@ dependencies:
   shared_preferences:
   time_range: ^1.1.0
   jwt_decoder: ^2.0.1
+  duration_picker:
 
 
 
