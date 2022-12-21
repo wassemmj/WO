@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 
 import '../Models/sing_up_model.dart';
 import '../Models/log_in_model.dart';
@@ -13,7 +12,7 @@ class ApiProvider with ChangeNotifier {
   bool isBack = false;
   String token = '';
 
-  String url = 'http://192.168.1.101:8000';
+  String url = 'http://192.168.1.107:8000';
 
   Future<http.Response> register(SingUpModel singUpModel) async {
     isLoading = false;
@@ -68,12 +67,7 @@ class ApiProvider with ChangeNotifier {
 
   Future setData(bool t) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    DateTime? expirationDate = token.isNotEmpty? JwtDecoder.getExpirationDate(token):null;
-    if(t&&expirationDate!=null&&expirationDate.isAfter(DateTime.now())) {
-      prefs.setBool('login', t);
-    } else {
-      prefs.setBool('login', false);
-    }
+    prefs.setBool('login', t);
   }
 
   Future<http.Response> logOut() async {
@@ -90,22 +84,16 @@ class ApiProvider with ChangeNotifier {
         'token' : token,
       },
     );
-    // Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
-    // print(decodedToken);
-    // DateTime expirationDate = JwtDecoder.getExpirationDate(token);
-    // print(expirationDate);
     if (response.statusCode == 200) {
       isBack = true;
       setData(false);
-      print(response.body);
-      token = '';
+      //print(response.body);
     }else {
       print(response.body);
     }
     isLoading = false;
     return response;
   }
-
   Future<http.Response> category(bool isEn) async {
     isLoading = false;
     isBack = false;
