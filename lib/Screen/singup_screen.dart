@@ -336,7 +336,7 @@ class _SignUpState extends State<SignUp> {
         }else {
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(map['message'],textDirection: TextDirection.ltr,style: const TextStyle(fontSize: 15),),
+                content: Text(map['error'],textDirection: TextDirection.ltr,style: const TextStyle(fontSize: 15),),
                 duration: const Duration(seconds: 1),
               )
           );
@@ -344,7 +344,7 @@ class _SignUpState extends State<SignUp> {
         else {
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(map['message'],textDirection: TextDirection.ltr,style: const TextStyle(fontSize: 15),),
+                content: Text('the email has been token',textDirection: TextDirection.ltr,style: const TextStyle(fontSize: 15),),
                 duration: const Duration(seconds: 1),
               )
           );

@@ -33,7 +33,7 @@ class ApiProvider with ChangeNotifier {
       isBack = true;
       //print(response.body);
     }else {
-      print(response.body);
+      //print(response.body);
     }
     isLoading = false;
     await login(LogInModel(email: singUpModel.email, password: singUpModel.password));
@@ -54,11 +54,11 @@ class ApiProvider with ChangeNotifier {
         "mobile": expert.mobile,
         "address": expert.address,
         "brief": expert.brief,
-        "session_period": '02:30',
-        "categoriesIds": expert.consId.toString(),
-        "available": expert.time.toString(),
+        "session_period": expert.sessionPeriod,
+        "categoriesIds": jsonEncode(expert.consId),
+        "available": jsonEncode(expert.time),
         "token":token,
-        'image' : expert.pickedImage
+        //'image' : expert.pickedImage
       },
     );
     if (response.statusCode == 200) {
@@ -155,6 +155,31 @@ class ApiProvider with ChangeNotifier {
     if(response.statusCode == 200) {
       isBack = true;
       print(response.body);
+    }else {
+      print(response.body);
+    }
+    isLoading = false;
+    return response;
+  }
+
+  Future<http.Response> bookingApp(int expertId,String date,String time) async {
+    isLoading = false;
+    isBack = false;
+    isLoading = true;
+    http.Response response = await http.post(
+      Uri.parse('$url/api/expert/$expertId/book'),
+      headers: {
+        'Accept': 'application/json',
+      },
+      body: {
+        'token' : token,
+        'date' : date,
+        'time' : time,
+      },
+    );
+    if(response.statusCode == 200) {
+      isBack = true;
+      //print(response.body);
     }else {
       print(response.body);
     }

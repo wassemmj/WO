@@ -8,7 +8,7 @@ class ExpertModels {
     required this.sessionPeriod,
     required this.time,
     required this.consId,
-    required this.pickedImage,
+    //required this.pickedImage,
   });
 
   String mobile;
@@ -17,5 +17,5 @@ class ExpertModels {
   String sessionPeriod;
   List consId;
   List<Map<String, String>> time;
-  File? pickedImage;
+  //File pickedImage;
 }

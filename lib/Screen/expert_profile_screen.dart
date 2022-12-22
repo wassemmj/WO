@@ -42,13 +42,13 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
   List conId = [];
 
   List<Map<String, String>> time = [
-    {"day": "Saturday", "start": "from", "end": "to"},
-    {"day": "Sunday", "start": "from", "end": "to"},
-    {"day": "Monday", "start": "from", "end": "to"},
-    {"day": "Tuesday", "start": "from", "end": "to"},
-    {"day": "Wednesday", "start": "from", "end": "to"},
-    {"day": "Thursday", "start": "from", "end": "to"},
-    {"day": "Friday", "start": "from", "end": "to"},
+    {"day": "saturday", "start": "from", "end": "to"},
+    {"day": "sunday", "start": "from", "end": "to"},
+    {"day": "monday", "start": "from", "end": "to"},
+    {"day": "tuesday", "start": "from", "end": "to"},
+    {"day": "wednesday", "start": "from", "end": "to"},
+    {"day": "thursday", "start": "from", "end": "to"},
+    {"day": "friday", "start": "from", "end": "to"},
   ];
 
   @override
@@ -56,6 +56,7 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
     getCat(true);
     super.initState();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -500,21 +501,38 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
     String mobile = phoneController.text;
     String address = addressController.text;
     String brief = skillController.text;
-    var provider = Provider.of<ApiProvider>(context,listen: false);
-    var lan = Provider.of<LanguageProvider>(context,listen: false);
+    var provider = Provider.of<ApiProvider>(context, listen: false);
+    var lan = Provider.of<LanguageProvider>(context, listen: false);
     var dd = _duration(duration!);
-    ExpertModels expertModels = ExpertModels(mobile: mobile, address: address, brief: brief, sessionPeriod: duration.toString(), time: time, consId: conId,pickedImage: pickedImage);
+    ExpertModels expertModels = ExpertModels(
+      mobile: mobile,
+      address: address,
+      brief: brief,
+      sessionPeriod: dd,
+      time: time,
+      consId: conId,
+      //pickedImage: pickedImage!,
+    );
+    print(dd);
     var r = await provider.registerExpert(expertModels);
-    // print(li);
-    // print(conId);
-    // print(time);
-    // print(duration!.inMinutes.toString());
-    if (time.every((element) => element['start']=='from'||element['end']=='to')) {
+    print(li);
+    print(conId);
+    print(jsonEncode(time));
+    if(duration==null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(
-          lan.isEn
-              ? "You Should fill all item"
-              : 'يجب ملئ كل القيم',
+          lan.isEn ? "choose duration" : 'اختر مدة للجلسة ',
+          style: const TextStyle(fontSize: 15),
+        ),
+        duration: const Duration(seconds: 1),
+      ));
+      return;
+    }
+    if (time.every(
+        (element) => element['start'] == 'from' || element['end'] == 'to')) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+          lan.isEn ? "You Should fill all item" : 'يجب ملئ كل القيم',
           style: const TextStyle(fontSize: 15),
         ),
         duration: const Duration(seconds: 1),
@@ -535,12 +553,11 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
     }
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      if(provider.isBack) {
+      if (provider.isBack) {
         var map = jsonDecode(r.body);
         print(map);
         print(r.body);
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(
             map['message'],
             textDirection: TextDirection.ltr,
@@ -549,15 +566,13 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
           duration: const Duration(seconds: 1),
         ));
         Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-                builder: (_) => const TabsScreen()));
+            MaterialPageRoute(builder: (_) => const TabsScreen()));
       } else {
         print(r.body);
       }
-      
+      print(dd);
     } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text(
           "Try Again!",
           textDirection: TextDirection.ltr,
@@ -590,9 +605,8 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                 initialTime: TimeOfDay.fromDateTime(DateTime.now()),
               );
               if (pickedTime == null) return;
-              String formattedTime = pickedTime.format(context);
               setState(() {
-                time[i]['start'] = formattedTime;
+                time[i]['start'] = pickedTime.to24hours();
               });
             },
             icon: const Icon(
@@ -614,9 +628,8 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                 initialTime: TimeOfDay.fromDateTime(DateTime.now()),
               );
               if (pickedTime == null) return;
-              String formattedTime = pickedTime.format(context);
               setState(() {
-                time[i]['end'] = formattedTime;
+                time[i]['end'] = pickedTime.to24hours();
               });
             },
             icon: const Icon(
@@ -648,6 +661,14 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
   String _duration(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, "0");
     String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
-    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitMinutes";
+    return "${twoDigits(duration.inHours)}:$twoDigitMinutes";
+  }
+}
+
+extension TimeOfDayConverter on TimeOfDay {
+  String to24hours() {
+    final hour = this.hour.toString().padLeft(2, "0");
+    final min = this.minute.toString().padLeft(2, "0");
+    return "$hour:$min";
   }
 }
