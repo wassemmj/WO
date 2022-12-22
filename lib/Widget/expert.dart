@@ -2,10 +2,11 @@ import 'package:cons_app/Screen/expert_details.dart';
 import 'package:flutter/material.dart';
 
 class Expert extends StatelessWidget {
-  const Expert({Key? key, required this.name, required this.imgPath}) : super(key: key);
+  const Expert({Key? key, required this.name, required this.imgPath, required this.id}) : super(key: key);
 
   final String name;
   final String imgPath;
+  final int id;
 
   @override
   Widget build(BuildContext context) {

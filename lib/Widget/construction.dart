@@ -29,10 +29,7 @@ class Construction extends StatelessWidget {
           ),
         ),
         onTap: () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => ExpertsScreen(expert: const [
-                  {'name': 'obada', 'imgPath': ''},
-                  {'name': 'wassim', 'imgPath': ''}
-                ], consName: constructionName))),
+            builder: (_) => ExpertsScreen(id: id,consName: constructionName))),
       ),
     );
   }

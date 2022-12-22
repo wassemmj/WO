@@ -186,4 +186,26 @@ class ApiProvider with ChangeNotifier {
     isLoading = false;
     return response;
   }
+
+  Future<http.Response> showExpert(int categoryId) async {
+    isLoading = false;
+    isBack = false;
+    isLoading = true;
+    http.Response response = await http.post(
+      Uri.parse('$url/api/$categoryId/experts'),
+      headers: {
+        'Accept': 'application/json',
+      },
+      body: {
+        'token' : token,
+      },
+    );
+    if(response.statusCode == 200) {
+      isBack = true;
+    }else {
+      print(response.body);
+    }
+    isLoading = false;
+    return response;
+  }
 }
