@@ -6,9 +6,10 @@ import 'package:provider/provider.dart';
 import '../Provider/language_provider.dart';
 
 class ExpertDetails extends StatefulWidget {
-  const ExpertDetails({Key? key, required this.expertName}) : super(key: key);
+  const ExpertDetails({Key? key, required this.expertName, required this.id}) : super(key: key);
 
   final String expertName;
+  final int id;
 
   @override
   State<ExpertDetails> createState() => _ExpertDetailsState();

@@ -47,7 +47,7 @@ class Expert extends StatelessWidget {
           ],
         ),
       ),
-      onTap: ()=>Navigator.of(context).push(MaterialPageRoute(builder: (_)=>ExpertDetails(expertName: name))),
+      onTap: ()=>Navigator.of(context).push(MaterialPageRoute(builder: (_)=>ExpertDetails(expertName: name, id: id,))),
     );
   }
 }
