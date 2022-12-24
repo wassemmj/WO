@@ -14,8 +14,9 @@ class ApiProvider with ChangeNotifier {
   bool isBack = false;
   String token = '';
   bool isExpert = false;
+  List favList = [];
 
-  String url = 'http://192.168.70.117:8000';
+  String url = 'http://192.168.80.117:8000';
 
   Future<http.Response> register(SingUpModel singUpModel) async {
     isLoading = false;
@@ -231,6 +232,80 @@ class ApiProvider with ChangeNotifier {
     if(response.statusCode == 200) {
       isBack = true;
       print(response.body);
+    }else {
+      print(response.body);
+    }
+    isLoading = false;
+    return response;
+  }
+
+  Future<http.Response> showFav() async {
+    isLoading = false;
+    isBack = false;
+    isLoading = true;
+    http.Response response = await http.post(
+      Uri.parse('$url/api/my-favorite'),
+      headers: {
+        'Accept': 'application/json',
+      },
+      body: {
+        'token' : token,
+      },
+    );
+    print(response.body);
+    if(response.statusCode == 200) {
+      isBack = true;
+      favList = jsonDecode(response.body)[0];
+      print(favList[0]);
+    }else {
+      print(response.body);
+    }
+    isLoading = false;
+    return response;
+  }
+
+  Future<http.Response> addFav(int expertId) async {
+    isLoading = false;
+    isBack = false;
+    isLoading = true;
+    http.Response response = await http.post(
+      Uri.parse('$url/api/$expertId/add-to-fav'),
+      headers: {
+        'Accept': 'application/json',
+      },
+      body: {
+        'token' : token,
+      },
+    );
+    if(response.statusCode == 200) {
+      isBack = true;
+      print(response.body);
+      showFav();
+    }else {
+      print(response.body);
+    }
+    isLoading = false;
+    return response;
+  }
+
+  Future<http.Response> rate(int expertId,double rate) async {
+    isLoading = false;
+    isBack = false;
+    isLoading = true;
+    http.Response response = await http.post(
+      Uri.parse('$url/api/$expertId/rate'),
+      headers: {
+        'Accept': 'application/json',
+      },
+      body: {
+        'token' : token,
+        'rate' : rate.toString(),
+      },
+    );
+    if(response.statusCode == 200) {
+      isBack = true;
+      print(response.body);
+      showFav();
     }else {
       print(response.body);
     }

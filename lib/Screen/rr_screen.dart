@@ -255,6 +255,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
                       ),
                       duration: const Duration(seconds: 1),
                     ));
+                    addRate(1, rate);
                     Navigator.of(ctx).pop();
                     Navigator.of(context).pop();
                   },
@@ -292,6 +293,15 @@ class _ReservationScreenState extends State<ReservationScreen> {
       } else if(map['status']==424) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(map['message']),duration: const Duration(seconds: 1),));
       }
+    }
+  }
+
+  Future addRate(int id,double rate) async {
+    var provider = Provider.of<ApiProvider>(context, listen: false);
+    var r = await provider.rate(id, rate);
+    var map = jsonDecode(r.body);
+    if (provider.isBack) {
+      print(map);
     }
   }
 }

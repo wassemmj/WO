@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:cons_app/Screen/chat_screen.dart';
 import 'package:cons_app/Screen/rr_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../Provider/api_provider.dart';
 import '../Provider/language_provider.dart';
 
 class ExpertDetails extends StatefulWidget {
@@ -17,6 +20,7 @@ class ExpertDetails extends StatefulWidget {
 
 class _ExpertDetailsState extends State<ExpertDetails> {
   bool fav = false;
+
   @override
   Widget build(BuildContext context) {
     var lan = Provider.of<LanguageProvider>(context, listen: true);
@@ -29,7 +33,18 @@ class _ExpertDetailsState extends State<ExpertDetails> {
           elevation: 0,
           actions: [
             IconButton(
-              onPressed: ()=>setState(()=>fav = !fav),
+              onPressed: () {
+                addFav();
+                if(Provider.of<ApiProvider>(context,listen: false).favList.every((element) => element['id']==1)){
+                  setState(() {
+                    fav = true;
+                  });
+                } else {
+                  setState(() {
+                    fav = false;
+                  });
+                }
+              },
               icon: Icon(fav
                   ? Icons.star
                   : Icons.star_border),
@@ -244,6 +259,16 @@ class _ExpertDetailsState extends State<ExpertDetails> {
         ),
       ),
     );
+  }
+
+  Future addFav() async {
+    var provider = Provider.of<ApiProvider>(context,listen: false);
+    var r = await provider.addFav(1);
+    print(r.body);
+    if(provider.isBack) {
+      var map = jsonDecode(r.body);
+      print(map);
+    }
   }
 
   Widget buildShowTime(String day,bool g) {

@@ -1,4 +1,5 @@
 import 'package:circular_bottom_navigation/tab_item.dart';
+import 'package:cons_app/Provider/api_provider.dart';
 import 'package:cons_app/Screen/constructions_screen.dart';
 import 'package:cons_app/Screen/favorites_screen.dart';
 import 'package:cons_app/Widget/MyDrawer.dart';
@@ -49,9 +50,7 @@ class _TabsScreenState extends State<TabsScreen> {
       },
       {
         'title': lan.getText('favorites').toString(),
-        'body': const FavoritesScreen(
-          favoriteList: [],
-        ),
+        'body': const FavoritesScreen(),
       },
     ];
     return Directionality(
