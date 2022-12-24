@@ -335,9 +335,9 @@ class _SignUpState extends State<SignUp> {
           }
         }else {
           ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(map['error'],textDirection: TextDirection.ltr,style: const TextStyle(fontSize: 15),),
-                duration: const Duration(seconds: 1),
+              const SnackBar(
+                content: Text('some error occurred',textDirection: TextDirection.ltr,style: TextStyle(fontSize: 15),),
+                duration: Duration(seconds: 1),
               )
           );
         }}

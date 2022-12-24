@@ -4,7 +4,11 @@ import 'package:provider/provider.dart';
 import '../Provider/language_provider.dart';
 
 class ReservationItem extends StatelessWidget {
-  const ReservationItem({Key? key}) : super(key: key);
+  const ReservationItem({Key? key, required this.name, required this.t, required this.d}) : super(key: key);
+
+  final String name;
+  final String t;
+  final String d;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +23,7 @@ class ReservationItem extends StatelessWidget {
       child: Row(
         children:[
           Text(
-            lan.isEn?'User-Name : ':'حساب المستخدم :  ',
+            '$name   :',
             textDirection: lan.isEn? TextDirection.ltr:TextDirection.rtl,
             textAlign: TextAlign.center,
             style: const TextStyle(
@@ -29,13 +33,13 @@ class ReservationItem extends StatelessWidget {
             ),
           ),
           Text(
-            '14/5/2022 3:35AM',
+            '    $d  $t',
             textDirection: lan.isEn? TextDirection.ltr:TextDirection.rtl,
             textAlign: TextAlign.center,
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],

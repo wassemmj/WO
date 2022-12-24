@@ -20,7 +20,6 @@ class ExpertsScreen extends StatefulWidget {
 
 class _ExpertsScreenState extends State<ExpertsScreen> {
   List li = [];
-  List listId = [];
 
   @override
   Widget build(BuildContext context) {
@@ -43,25 +42,39 @@ class _ExpertsScreenState extends State<ExpertsScreen> {
                       ),
                     ))
                   : snapshot.hasData
-                      ? Container(
-                          decoration: const BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.purple,
-                                Colors.white,
-                                Colors.white
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                          ),
-                          child: ListView.builder(
-                            itemCount: li.length,
-                            itemBuilder: (ctx, index) {
-                              return Expert(name: li[index],imgPath: '', id: listId[index],);
-                            },
-                          ),
-                        )
+                      ? li.isEmpty
+                          ? Center(
+                              child: Text(
+                                lan.isEn
+                                    ? 'there is no expert'
+                                    : 'لا يوجد خبراء هنا',
+                                style: const TextStyle(
+                                    color: Colors.black54, fontSize: 18),
+                              ),
+                            )
+                          : Container(
+                              decoration: const BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.purple,
+                                    Colors.white,
+                                    Colors.white
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                              ),
+                              child: ListView.builder(
+                                itemCount: li.length,
+                                itemBuilder: (ctx, index) {
+                                  return Expert(
+                                    name: li[index]['name'],
+                                    imgPath: '',
+                                    id: li[index]['id'],
+                                  );
+                                },
+                              ),
+                            )
                       : const Center(
                           child: Text('error'),
                         );
@@ -73,16 +86,13 @@ class _ExpertsScreenState extends State<ExpertsScreen> {
   Future getExpert() async {
     var pr = Provider.of<ApiProvider>(context, listen: true);
     var response = await pr.showExpert(widget.id);
-    var ex = jsonDecode(jsonEncode(jsonDecode(response.body)['experts']));
-    var list = [];
-    var listId = [];
     if (pr.isBack) {
-      ex.forEach((k, v) => list.add(v['name']));
-      ex.forEach((k, v) => listId.add(v['id']));
-      li = list;
-      this.listId = listId;
-      print(li);
-      print(this.listId);
+      //print(jsonDecode(response.body)['experts']);
+      //ex.forEach((k, v) => list.add(v['name']));
+      //ex.forEach((k, v) => listId.add(v['id']));
+      li = jsonDecode(response.body)['experts'];
+      //print(list);
+      //print(this.listId);
       return response.body;
     } else {
       throw Exception('can not load data');

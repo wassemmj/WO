@@ -41,24 +41,8 @@ class _MyDrawerState extends State<MyDrawer> {
                     padding: const EdgeInsets.all(20),
                     child: Row(
                       children: [
-                        Container(
-                          decoration: const BoxDecoration(
-                            color: Colors.white70,
-                            shape: BoxShape.circle,
-                          ),
-                          child: ClipOval(
-                            child: SizedBox.fromSize(
-                              size: const Size.fromRadius(30),
-                              child: Image.asset(
-                                'images/i.png',
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 20),
                         Text(
-                          widget.name,
+                          lan.isEn?'Hello to our application':'اهلا بك في تطبيقنا',
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             color: Colors.black54,
@@ -69,7 +53,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       ],
                     ),
                   ),
-                  Padding(
+                  Provider.of<ApiProvider>(context,listen: false).isExpert?Padding(
                     padding: const EdgeInsets.all(20),
                     child: InkWell(
                       onTap: () => Navigator.of(context).push(MaterialPageRoute(
@@ -93,8 +77,9 @@ class _MyDrawerState extends State<MyDrawer> {
                         ],
                       ),
                     ),
-                  ),
-                  const Divider(thickness: 1),
+                  ):Container(),
+                  Provider.of<ApiProvider>(context,listen: false).isExpert?const Divider(thickness: 1):Container(),
+                  const SizedBox(height: 20,),
                   Container(
                     alignment: lan.isEn? Alignment.centerLeft:Alignment.centerRight,
                     padding: const EdgeInsets.symmetric(horizontal: 20),

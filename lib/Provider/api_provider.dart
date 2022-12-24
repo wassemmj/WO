@@ -13,8 +13,9 @@ class ApiProvider with ChangeNotifier {
   bool isLoading = false;
   bool isBack = false;
   String token = '';
+  bool isExpert = false;
 
-  String url = 'http://192.168.1.101:8000';
+  String url = 'http://192.168.70.117:8000';
 
   Future<http.Response> register(SingUpModel singUpModel) async {
     isLoading = false;
@@ -31,7 +32,7 @@ class ApiProvider with ChangeNotifier {
     );
     if (response.statusCode == 201) {
       isBack = true;
-      //print(response.body);
+      print(response.body);
     }else {
       //print(response.body);
     }
@@ -57,12 +58,14 @@ class ApiProvider with ChangeNotifier {
         "session_period": expert.sessionPeriod,
         "categoriesIds": jsonEncode(expert.consId),
         "available": jsonEncode(expert.time),
+        'session_price': expert.money,
         "token":token,
         //'image' : expert.pickedImage
       },
     );
     if (response.statusCode == 200) {
       isBack = true;
+      isExpert = true;
       print(response.body);
     }else {
       print(response.body);
@@ -89,7 +92,9 @@ class ApiProvider with ChangeNotifier {
       isBack = true;
       setData(true);
       token = map['access_token'];
-      //print(response.body);
+      isExpert = map['isExpert'];
+      print(isExpert);
+      print(response.body);
     }else {
       print(response.body);
     }
@@ -179,7 +184,7 @@ class ApiProvider with ChangeNotifier {
     );
     if(response.statusCode == 200) {
       isBack = true;
-      //print(response.body);
+      print(response.body);
     }else {
       print(response.body);
     }
@@ -202,6 +207,30 @@ class ApiProvider with ChangeNotifier {
     );
     if(response.statusCode == 200) {
       isBack = true;
+      print(response.body);
+    }else {
+      print(response.body);
+    }
+    isLoading = false;
+    return response;
+  }
+
+  Future<http.Response> showApp() async {
+    isLoading = false;
+    isBack = false;
+    isLoading = true;
+    http.Response response = await http.post(
+      Uri.parse('$url/api/profile'),
+      headers: {
+        'Accept': 'application/json',
+      },
+      body: {
+        'token' : token,
+      },
+    );
+    if(response.statusCode == 200) {
+      isBack = true;
+      print(response.body);
     }else {
       print(response.body);
     }

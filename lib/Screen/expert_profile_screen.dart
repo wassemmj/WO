@@ -29,6 +29,7 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
   var addressController = TextEditingController();
   var phoneController = TextEditingController();
   var skillController = TextEditingController();
+  var moneyController = TextEditingController();
   Duration? duration;
 
   bool _isC1 = false;
@@ -233,6 +234,38 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
                           return lan.isEn
                               ? 'Skill is Required'
                               : 'المهارات مطلوبة';
+                        }
+                      },
+                      style: const TextStyle(color: Colors.black54),
+                    ),
+                    const SizedBox(height: 10),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        hintText: lan.isEn ? 'Enter session price' : 'ادخل سعر الجلسة',
+                        hintStyle: const TextStyle(
+                          color: Colors.black54,
+                        ),
+                        labelText: lan.isEn ? 'session price' : 'سعر الجلسة',
+                        labelStyle: const TextStyle(
+                          color: Colors.purple,
+                          fontSize: 20,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.purple),
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        focusColor: Colors.purple,
+                        focusedBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.purple),
+                        ),
+                      ),
+                      cursorColor: Colors.purple,
+                      controller: moneyController,
+                      validator: (val) {
+                        if (val!.isEmpty) {
+                          return lan.isEn
+                              ? 'session price required'
+                              : 'سعر الجلسة مطلوب';
                         }
                       },
                       style: const TextStyle(color: Colors.black54),
@@ -501,6 +534,7 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
     String mobile = phoneController.text;
     String address = addressController.text;
     String brief = skillController.text;
+    String money = moneyController.text;
     var provider = Provider.of<ApiProvider>(context, listen: false);
     var lan = Provider.of<LanguageProvider>(context, listen: false);
     var dd = _duration(duration!);
@@ -511,6 +545,7 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
       sessionPeriod: dd,
       time: time,
       consId: conId,
+      money: money
       //pickedImage: pickedImage!,
     );
     print(dd);
