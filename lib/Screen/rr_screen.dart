@@ -9,7 +9,9 @@ import '../Provider/api_provider.dart';
 import '../Provider/language_provider.dart';
 
 class ReservationScreen extends StatefulWidget {
-  const ReservationScreen({Key? key}) : super(key: key);
+  const ReservationScreen({Key? key, required this.id}) : super(key: key);
+
+  final int id;
 
   @override
   State<ReservationScreen> createState() => _ReservationScreenState();
@@ -199,7 +201,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
   Future bookApp(bool isEn) async {
     var provider = Provider.of<ApiProvider>(context, listen: false);
     String date =  intl.DateFormat('yyyy-MM-dd').format(_selectedDate!);
-    var r = await provider.bookingApp(1,date, time!);
+    var r = await provider.bookingApp(widget.id,date, time!);
     Map<String,dynamic> map = jsonDecode(r.body);
     print(map);
     print(map['message']);
@@ -255,7 +257,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
                       ),
                       duration: const Duration(seconds: 1),
                     ));
-                    addRate(1, rate);
+                    addRate(widget.id, rate);
                     Navigator.of(ctx).pop();
                     Navigator.of(context).pop();
                   },
@@ -278,7 +280,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
                       duration: const Duration(seconds: 1),
                     ));
                     Navigator.of(ctx).pop();
-                    Navigator.of(context).pop();
+                    //Navigator.of(context).pop();
                   },
                   child: Text(
                     isEn ? 'Cancel' : 'الغاء',

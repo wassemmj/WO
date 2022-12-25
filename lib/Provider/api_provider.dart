@@ -16,7 +16,7 @@ class ApiProvider with ChangeNotifier {
   bool isExpert = false;
   List favList = [];
 
-  String url = 'http://192.168.80.117:8000';
+  String url = 'http://172.20.10.7:8000';
 
   Future<http.Response> register(SingUpModel singUpModel) async {
     isLoading = false;
@@ -215,6 +215,29 @@ class ApiProvider with ChangeNotifier {
     isLoading = false;
     return response;
   }
+  
+  Future<http.Response> showExpertDetails(int id)async{
+    isLoading = false;
+    isBack = false;
+    isLoading = true;
+    http.Response res= await http.post(
+      Uri.parse('$url/api/expert/$id'),
+      headers:{
+        'Accept': 'application/json',
+      },
+      body:{
+        'token':token
+      },
+    );
+    if(res.statusCode==200){
+      isBack=true;
+      //print(res.body);
+    }else{
+      print(res.body);
+    }
+    isLoading  = false;
+    return res;
+  }
 
   Future<http.Response> showApp() async {
     isLoading = false;
@@ -252,11 +275,11 @@ class ApiProvider with ChangeNotifier {
         'token' : token,
       },
     );
-    print(response.body);
+    //print(response.body);
     if(response.statusCode == 200) {
       isBack = true;
       favList = jsonDecode(response.body)[0];
-      print(favList[0]);
+      print(favList);
     }else {
       print(response.body);
     }
