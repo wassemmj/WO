@@ -16,7 +16,7 @@ class ApiProvider with ChangeNotifier {
   bool isExpert = false;
   List favList = [];
 
-  String url = 'http://172.20.10.7:8000';
+  String url = 'http://192.168.217.117:8000';
 
   Future<http.Response> register(SingUpModel singUpModel) async {
     isLoading = false;

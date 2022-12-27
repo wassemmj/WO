@@ -320,6 +320,13 @@ class _ExpertDetailsState extends State<ExpertDetails> {
       wed = l[4]['available_at'];
       thr = l[5]['available_at'];
       fri = l[6]['available_at'];
+      print(stu);
+      print(sun);
+      print(mon);
+      print(tus);
+      print(wed);
+      print(thr);
+      print(fri);
       //print(stu['day']);
       print(map);
       return r.body;
