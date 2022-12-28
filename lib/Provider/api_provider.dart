@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:cons_app/Models/expert_models.dart';
 import 'package:flutter/material.dart';
@@ -8,15 +9,16 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 
 import '../Models/sing_up_model.dart';
 import '../Models/log_in_model.dart';
+import 'dart:io';
 
 class ApiProvider with ChangeNotifier {
   bool isLoading = false;
   bool isBack = false;
   String token = '';
   bool isExpert = false;
-  List favList = [];
+  List? favList = [];
 
-  String url = 'http://192.168.217.117:8000';
+  String url = 'http://192.168.1.105:8000';
 
   Future<http.Response> register(SingUpModel singUpModel) async {
     isLoading = false;
@@ -34,11 +36,12 @@ class ApiProvider with ChangeNotifier {
     if (response.statusCode == 201) {
       isBack = true;
       print(response.body);
-    }else {
+    } else {
       //print(response.body);
     }
     isLoading = false;
-    await login(LogInModel(email: singUpModel.email, password: singUpModel.password));
+    await login(
+        LogInModel(email: singUpModel.email, password: singUpModel.password));
     return response;
   }
 
@@ -60,16 +63,34 @@ class ApiProvider with ChangeNotifier {
         "categoriesIds": jsonEncode(expert.consId),
         "available": jsonEncode(expert.time),
         'session_price': expert.money,
-        "token":token,
-        //'image' : expert.pickedImage
+        "token": token,
+        'image' : base64Encode(expert.pickedImage.readAsBytesSync()),
       },
     );
+    // var request = http
+    //     .MultipartRequest('POST', Uri.parse('$url/api/add-expert',))..fields.addAll({
+    //   "mobile": expert.mobile,
+    //   "address": expert.address,
+    //   "brief": expert.brief,
+    //   "session_period": expert.sessionPeriod,
+    //   "categoriesIds": jsonEncode(expert.consId),
+    //   "available": jsonEncode(expert.time),
+    //   'session_price': expert.money,
+    //   "token": token,
+    //   //'image' : expert.pickedImage
+    // })..headers.addAll({
+    //      'Accept': 'application/json',
+    //    },);
+    // Uint8List data = await file.readAsBytes();
+    // List<int> list = data.cast();
+    // request.files.add(http.MultipartFile.fromBytes('image', list,filename: file.path));
+    // var response = await request.send();
     if (response.statusCode == 200) {
-      isBack = true;
-      isExpert = true;
-      print(response.body);
+    isBack = true;
+    isExpert = true;
+    print(response);
     }else {
-      print(response.body);
+    print(response);
     }
     isLoading = false;
     return response;
@@ -88,7 +109,7 @@ class ApiProvider with ChangeNotifier {
       },
       body: jsonEncode(logInModel.toJson()),
     );
-    Map<String,dynamic> map = jsonDecode(response.body);
+    Map<String, dynamic> map = jsonDecode(response.body);
     if (response.statusCode == 200) {
       isBack = true;
       setData(true);
@@ -96,7 +117,7 @@ class ApiProvider with ChangeNotifier {
       isExpert = map['isExpert'];
       print(isExpert);
       print(response.body);
-    }else {
+    } else {
       print(response.body);
     }
     isLoading = false;
@@ -106,8 +127,9 @@ class ApiProvider with ChangeNotifier {
 
   Future setData(bool t) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    DateTime? expirationDate = token.isNotEmpty? JwtDecoder.getExpirationDate(token):null;
-    if(t&&expirationDate!=null&&expirationDate.isAfter(DateTime.now())) {
+    DateTime? expirationDate = token.isNotEmpty ? JwtDecoder.getExpirationDate(
+        token) : null;
+    if (t && expirationDate != null && expirationDate.isAfter(DateTime.now())) {
       prefs.setBool('login', t);
     } else {
       prefs.setBool('login', false);
@@ -125,7 +147,7 @@ class ApiProvider with ChangeNotifier {
         'Accept': 'application/json',
       },
       body: {
-        'token' : token,
+        'token': token,
       },
     );
     // Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
@@ -137,7 +159,7 @@ class ApiProvider with ChangeNotifier {
       setData(false);
       print(response.body);
       token = '';
-    }else {
+    } else {
       print(response.body);
     }
     isLoading = false;
@@ -154,21 +176,21 @@ class ApiProvider with ChangeNotifier {
         'Accept': 'application/json',
       },
       body: {
-        'token' : token,
-        'language': isEn ? '':'ar',
+        'token': token,
+        'language': isEn ? '' : 'ar',
       },
     );
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       isBack = true;
       print(response.body);
-    }else {
+    } else {
       print(response.body);
     }
     isLoading = false;
     return response;
   }
 
-  Future<http.Response> bookingApp(int expertId,String date,String time) async {
+  Future<http.Response> bookingApp(int expertId, String date, String time) async {
     isLoading = false;
     isBack = false;
     isLoading = true;
@@ -178,15 +200,15 @@ class ApiProvider with ChangeNotifier {
         'Accept': 'application/json',
       },
       body: {
-        'token' : token,
-        'date' : date,
-        'time' : time,
+        'token': token,
+        'date': date,
+        'time': time,
       },
     );
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       isBack = true;
       print(response.body);
-    }else {
+    } else {
       print(response.body);
     }
     isLoading = false;
@@ -203,39 +225,39 @@ class ApiProvider with ChangeNotifier {
         'Accept': 'application/json',
       },
       body: {
-        'token' : token,
+        'token': token,
       },
     );
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       isBack = true;
       print(response.body);
-    }else {
+    } else {
       print(response.body);
     }
     isLoading = false;
     return response;
   }
-  
-  Future<http.Response> showExpertDetails(int id)async{
+
+  Future<http.Response> showExpertDetails(int id) async {
     isLoading = false;
     isBack = false;
     isLoading = true;
-    http.Response res= await http.post(
+    http.Response res = await http.post(
       Uri.parse('$url/api/expert/$id'),
-      headers:{
+      headers: {
         'Accept': 'application/json',
       },
-      body:{
-        'token':token
+      body: {
+        'token': token
       },
     );
-    if(res.statusCode==200){
-      isBack=true;
+    if (res.statusCode == 200) {
+      isBack = true;
       //print(res.body);
-    }else{
+    } else {
       print(res.body);
     }
-    isLoading  = false;
+    isLoading = false;
     return res;
   }
 
@@ -249,13 +271,13 @@ class ApiProvider with ChangeNotifier {
         'Accept': 'application/json',
       },
       body: {
-        'token' : token,
+        'token': token,
       },
     );
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       isBack = true;
       print(response.body);
-    }else {
+    } else {
       print(response.body);
     }
     isLoading = false;
@@ -272,15 +294,15 @@ class ApiProvider with ChangeNotifier {
         'Accept': 'application/json',
       },
       body: {
-        'token' : token,
+        'token': token,
       },
     );
     //print(response.body);
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       isBack = true;
       favList = jsonDecode(response.body)[0];
       print(favList);
-    }else {
+    } else {
       print(response.body);
     }
     isLoading = false;
@@ -297,21 +319,50 @@ class ApiProvider with ChangeNotifier {
         'Accept': 'application/json',
       },
       body: {
-        'token' : token,
+        'token': token,
       },
     );
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       isBack = true;
       print(response.body);
       showFav();
-    }else {
+    } else {
       print(response.body);
     }
     isLoading = false;
     return response;
   }
 
-  Future<http.Response> rate(int expertId,double rate) async {
+  Future<http.Response> delFav(int expertId) async {
+    isLoading = false;
+    isBack = false;
+    isLoading = true;
+    http.Response response = await http.post(
+      Uri.parse('$url/api/$expertId/delete/fav'),
+      headers: {
+        'Accept': 'application/json',
+      },
+      body: {
+        'token': token,
+      },
+    );
+    if (response.statusCode == 200) {
+      isBack = true;
+      print(response.body);
+      showFav();
+    } else {
+      print(response.body);
+    }
+    isLoading = false;
+    return response;
+  }
+
+
+  bool isMealFavorites(int id) {
+    return favList!.any((expert) => id == expert.id);
+  }
+
+  Future<http.Response> rate(int expertId, double rate) async {
     isLoading = false;
     isBack = false;
     isLoading = true;
@@ -321,15 +372,15 @@ class ApiProvider with ChangeNotifier {
         'Accept': 'application/json',
       },
       body: {
-        'token' : token,
-        'rate' : rate.toString(),
+        'token': token,
+        'rate': rate.toString(),
       },
     );
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       isBack = true;
       print(response.body);
       showFav();
-    }else {
+    } else {
       print(response.body);
     }
     isLoading = false;

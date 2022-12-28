@@ -545,8 +545,8 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
       sessionPeriod: dd,
       time: time,
       consId: conId,
-      money: money
-      //pickedImage: pickedImage!,
+      money: money,
+      pickedImage: pickedImage!,
     );
     print(dd);
     var r = await provider.registerExpert(expertModels);
@@ -589,12 +589,12 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       if (provider.isBack) {
-        var map = jsonDecode(r.body);
-        print(map);
-        print(r.body);
+        //var map = jsonDecode(r.body);
+        //print(map);
+        print(r);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(
-            map['message'],
+            'register successfully',
             textDirection: TextDirection.ltr,
             style: const TextStyle(fontSize: 15),
           ),
@@ -603,7 +603,7 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (_) => const TabsScreen()));
       } else {
-        print(r.body);
+        print(r);
       }
       print(dd);
     } else {

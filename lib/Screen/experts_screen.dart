@@ -69,7 +69,7 @@ class _ExpertsScreenState extends State<ExpertsScreen> {
                                 itemBuilder: (ctx, index) {
                                   return Expert(
                                     name: li[index]['name'],
-                                    imgPath: '',
+                                    imgPath: '${Provider.of<ApiProvider>(context, listen: true).url}/storage/${li[index]['image']}',
                                     id: li[index]['id'],
                                   );
                                 },
@@ -87,12 +87,7 @@ class _ExpertsScreenState extends State<ExpertsScreen> {
     var pr = Provider.of<ApiProvider>(context, listen: true);
     var response = await pr.showExpert(widget.id);
     if (pr.isBack) {
-      //print(jsonDecode(response.body)['experts']);
-      //ex.forEach((k, v) => list.add(v['name']));
-      //ex.forEach((k, v) => listId.add(v['id']));
       li = jsonDecode(response.body)['experts'];
-      //print(list);
-      //print(this.listId);
       return response.body;
     } else {
       throw Exception('can not load data');

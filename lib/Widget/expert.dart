@@ -27,8 +27,8 @@ class Expert extends StatelessWidget {
               child: ClipOval(
                 child: SizedBox.fromSize(
                   size: const Size.fromRadius(30),
-                  child: Image.asset(
-                      'images/i.png',
+                  child: Image.network(
+                      imgPath,
                       fit: BoxFit.cover,
                   ),
                 ),

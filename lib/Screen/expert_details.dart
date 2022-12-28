@@ -34,6 +34,19 @@ class _ExpertDetailsState extends State<ExpertDetails> {
   var fri;
   var stu;
 
+  @override
+  void initState() {
+    if(Provider.of<ApiProvider>(context,listen: true).isMealFavorites(id)){
+      setState(() {
+        fav = true;
+      });
+    } else {
+      setState(() {
+        fav = false;
+      });
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,11 +62,12 @@ class _ExpertDetailsState extends State<ExpertDetails> {
             IconButton(
               onPressed: () {
                 addFav();
-                if(Provider.of<ApiProvider>(context,listen: false).favList.every((element) => element['id']==1)){
+                if(fav&&Provider.of<ApiProvider>(context,listen: false).isMealFavorites(id)){
                   setState(() {
                     fav = true;
                   });
-                } else {
+                } else if(!fav) {
+                  Provider.of<ApiProvider>(context,listen: false).delFav(id);
                   setState(() {
                     fav = false;
                   });
