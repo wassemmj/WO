@@ -1,12 +1,16 @@
+import 'dart:convert';
+
 import 'package:circular_bottom_navigation/tab_item.dart';
-import 'package:cons_app/Provider/api_provider.dart';
 import 'package:cons_app/Screen/constructions_screen.dart';
 import 'package:cons_app/Screen/favorites_screen.dart';
 import 'package:cons_app/Widget/MyDrawer.dart';
+import 'package:cons_app/Widget/expert.dart';
 import 'package:flutter/material.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:provider/provider.dart';
 
+import 'package:http/http.dart' as http;
+import '../Provider/api_provider.dart';
 import '../Provider/language_provider.dart';
 
 class TabsScreen extends StatefulWidget {
@@ -125,7 +129,7 @@ class _TabsScreenState extends State<TabsScreen> {
   }
 }
 
-class MySearchDelegate extends SearchDelegate {
+class MySearchDelegate extends SearchDelegate{
   List<String> searchResult = [
     'Waseem',
     'Obada',
@@ -152,12 +156,9 @@ class MySearchDelegate extends SearchDelegate {
       );
 
   @override
-  Widget buildResults(BuildContext context) => Center(
-        child: Text(
-          query,
-          style: const TextStyle(color: Colors.black87, fontSize: 35),
-        ),
-      );
+  Widget buildResults(BuildContext context) {
+    return Result(query: query,);
+  }
 
   @override
   Widget buildSuggestions(BuildContext context) {
@@ -179,4 +180,64 @@ class MySearchDelegate extends SearchDelegate {
           );
         });
   }
+
 }
+
+class Result extends StatefulWidget {
+  const Result({Key? key,required this.query}) : super(key: key);
+
+  final String query;
+
+  @override
+  State<Result> createState() => _ResultState();
+}
+
+class _ResultState extends State<Result> {
+  List li = [];
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: search(),
+      builder: (context,snapshot) {
+        List l = li.where((element) {
+          List ll = element['name'].toString().split('');
+          print(ll);
+          List lll = widget.query.split('');
+          print(lll);
+          for(int i=0;i<lll.length;i++) {
+            if(lll[i]!=ll[i]||lll.length>ll.length) {
+              return false;
+            }
+          }
+          return true;
+        }).toList();
+        return l.isNotEmpty? ListView.builder(
+          itemCount: l.length,
+          itemBuilder: (context,index) {
+            return Expert(name: l[index]['name'], imgPath: '', id: l[index]['id']);
+          },
+        ) :const Center(
+          child: Text(
+            "Not found",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future search() async {
+    var provider = Provider.of<ApiProvider>(context, listen: false);
+    var r = await provider.search();
+    var map = jsonDecode(r.body);
+    if (provider.isBack) {
+      li = map['experts'];
+      print(li);
+    }
+  }
+}
+

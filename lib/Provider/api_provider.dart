@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:cons_app/Models/expert_models.dart';
 import 'package:flutter/material.dart';
@@ -16,9 +15,9 @@ class ApiProvider with ChangeNotifier {
   bool isBack = false;
   String token = '';
   bool isExpert = false;
-  List? favList = [];
+  List favList = [];
 
-  String url = 'http://192.168.1.105:8000';
+  String url = 'http://192.168.114.161:8000';
 
   Future<http.Response> register(SingUpModel singUpModel) async {
     isLoading = false;
@@ -64,7 +63,7 @@ class ApiProvider with ChangeNotifier {
         "available": jsonEncode(expert.time),
         'session_price': expert.money,
         "token": token,
-        'image' : base64Encode(expert.pickedImage.readAsBytesSync()),
+        //'image' : base64Encode(expert.pickedImage.readAsBytesSync()),
       },
     );
     // var request = http
@@ -297,11 +296,10 @@ class ApiProvider with ChangeNotifier {
         'token': token,
       },
     );
-    //print(response.body);
     if (response.statusCode == 200) {
       isBack = true;
-      favList = jsonDecode(response.body)[0];
-      print(favList);
+      //favList = jsonDecode(response.body)[0];
+      print(response.body);
     } else {
       print(response.body);
     }
@@ -337,7 +335,7 @@ class ApiProvider with ChangeNotifier {
     isLoading = false;
     isBack = false;
     isLoading = true;
-    http.Response response = await http.post(
+    http.Response response = await http.delete(
       Uri.parse('$url/api/$expertId/delete/fav'),
       headers: {
         'Accept': 'application/json',
@@ -357,9 +355,9 @@ class ApiProvider with ChangeNotifier {
     return response;
   }
 
-
   bool isMealFavorites(int id) {
-    return favList!.any((expert) => id == expert.id);
+    notifyListeners();
+    return favList.any((expert) => id == expert['id']);
   }
 
   Future<http.Response> rate(int expertId, double rate) async {
@@ -380,6 +378,29 @@ class ApiProvider with ChangeNotifier {
       isBack = true;
       print(response.body);
       showFav();
+    } else {
+      print(response.body);
+    }
+    isLoading = false;
+    return response;
+  }
+
+  Future<http.Response> search() async {
+    isLoading = false;
+    isBack = false;
+    isLoading = true;
+    http.Response response = await http.post(
+      Uri.parse('$url/api/getExpert'),
+      headers: {
+        'Accept': 'application/json',
+      },
+      body: {
+        'token': token,
+      },
+    );
+    if (response.statusCode == 200) {
+      isBack = true;
+      print(response.body);
     } else {
       print(response.body);
     }

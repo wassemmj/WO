@@ -25,6 +25,7 @@ class _ExpertDetailsState extends State<ExpertDetails> {
   String skills = '';
   String rate = '';
   late int id;
+  List con = [];
 
   var sun;
   var mon;
@@ -34,8 +35,12 @@ class _ExpertDetailsState extends State<ExpertDetails> {
   var fri;
   var stu;
 
+
+
   @override
-  void initState() {
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    await showDetails();
     if(Provider.of<ApiProvider>(context,listen: true).isMealFavorites(id)){
       setState(() {
         fav = true;
@@ -61,15 +66,16 @@ class _ExpertDetailsState extends State<ExpertDetails> {
           actions: [
             IconButton(
               onPressed: () {
-                addFav();
-                if(fav&&Provider.of<ApiProvider>(context,listen: false).isMealFavorites(id)){
+                if(!fav) {
+                  addFav();
                   setState(() {
                     fav = true;
                   });
-                } else if(!fav) {
+                }
+                else if(fav) {
                   Provider.of<ApiProvider>(context,listen: false).delFav(id);
                   setState(() {
-                    fav = false;
+                    fav=!fav;
                   });
                 }
               },
@@ -256,36 +262,44 @@ class _ExpertDetailsState extends State<ExpertDetails> {
                           width: 15,
                         ),
                         Column(
-                          children: const [
-                            Text(
-                              'Medical Construction',
-                              style: TextStyle(
+                          children: [
+                            con.length>0 ?Text(
+                              lan.isEn? con[0]['titleE']:con[0]['titleA'],
+                              style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w300,
                               ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              'Financial Construction',
-                              style: TextStyle(
+                            ):Container(),
+                            con.length>1 ?Text(
+                              lan.isEn? con[1]['titleE']:con[1]['titleA'],
+                              style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w300,
                               ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              'Medical Construction',
-                              style: TextStyle(
+                            ):Container(),
+                            con.length>2 ?Text(
+                              lan.isEn? con[2]['titleE']:con[2]['titleA'],
+                              style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w300,
                               ),
-                            ),
+                            ):Container(),
+                            con.length>3 ?Text(
+                              lan.isEn? con[3]['titleE']:con[3]['titleA'],
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ):Container(),
+                            con.length>4 ?Text(
+                              lan.isEn? con[4]['titleE']:con[4]['titleA'],
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ):Container(),
                           ],
-                        ),
+                        )
                       ],
                     ),
                   ],
@@ -322,7 +336,8 @@ class _ExpertDetailsState extends State<ExpertDetails> {
       skills=map['expert']['brief'];
       rate =map['expert']['rate'].toString();
       id = map['expert']['id'];
-      //print(map['expert']['id']);
+      con = map['expert']['categories'];
+      print(con);
       var l = [];
       for(int i = 0;i<7;i++) {
         l.add(map['available'][i]);

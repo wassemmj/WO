@@ -30,8 +30,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   color: Colors.purple,
                 ),
               ))
-            : fav.isNotEmpty
-                ? Padding(
+            : fav.isNotEmpty? Padding(
                     padding: const EdgeInsets.all(15),
                     child: ListView.builder(
                       itemCount: fav.length,
@@ -64,7 +63,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     var r = await provider.showFav();
     print(r.body);
     if (provider.isBack) {
-      fav = jsonDecode(r.body)[0];
+      fav = jsonDecode(r.body)["favorite"];
       print(fav);
     }
   }
