@@ -4,11 +4,12 @@ import 'package:provider/provider.dart';
 import '../Provider/language_provider.dart';
 
 class ReservationItem extends StatelessWidget {
-  const ReservationItem({Key? key, required this.name, required this.t, required this.d}) : super(key: key);
+  const ReservationItem({Key? key, required this.name, required this.t, required this.d, required this.f}) : super(key: key);
 
   final String name;
   final String t;
   final String d;
+  final Function() f;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,7 @@ class ReservationItem extends StatelessWidget {
       child: Row(
         children:[
           Text(
-            '$name   :',
+            '$name      ',
             textDirection: lan.isEn? TextDirection.ltr:TextDirection.rtl,
             textAlign: TextAlign.center,
             style: const TextStyle(
@@ -42,6 +43,7 @@ class ReservationItem extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
+          IconButton(onPressed: f, icon: const Icon(Icons.delete,color: Colors.white,)),
         ],
       ),
     );

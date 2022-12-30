@@ -53,7 +53,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       ],
                     ),
                   ),
-                  Provider.of<ApiProvider>(context,listen: false).isExpert?Padding(
+                  Padding(
                     padding: const EdgeInsets.all(20),
                     child: InkWell(
                       onTap: () => Navigator.of(context).push(MaterialPageRoute(
@@ -77,8 +77,8 @@ class _MyDrawerState extends State<MyDrawer> {
                         ],
                       ),
                     ),
-                  ):Container(),
-                  Provider.of<ApiProvider>(context,listen: false).isExpert?const Divider(thickness: 1):Container(),
+                  ),
+                  const Divider(thickness: 1),
                   const SizedBox(height: 20,),
                   Container(
                     alignment: lan.isEn? Alignment.centerLeft:Alignment.centerRight,
@@ -167,7 +167,7 @@ class _MyDrawerState extends State<MyDrawer> {
                   width: double.infinity,
                   color: Colors.purple.withOpacity(0.8),
                   child: Text(
-                    '${lan.getText('drawer_item3')}  :             15000',
+                    '${lan.getText('drawer_item3')}  :             ${Provider.of<ApiProvider>(context, listen: true).money}',
                     style: const TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.w400,

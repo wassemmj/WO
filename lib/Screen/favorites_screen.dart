@@ -37,7 +37,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                       itemBuilder: (context, index) {
                         return Expert(
                             name: fav[index]['name'],
-                            imgPath: '',
+                            imgPath: '${Provider.of<ApiProvider>(context, listen: true).url}/storage/${fav[index]['image']}',
                             id: fav[index]['id']);
                       },
                     ),

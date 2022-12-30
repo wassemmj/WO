@@ -301,9 +301,9 @@ class _ReservationScreenState extends State<ReservationScreen> {
   Future addRate(int id,double rate) async {
     var provider = Provider.of<ApiProvider>(context, listen: false);
     var r = await provider.rate(id, rate);
-    var map = jsonDecode(r.body);
+    //var map = jsonDecode(r.body);
     if (provider.isBack) {
-      print(map);
+      print(r.body);
     }
   }
 }

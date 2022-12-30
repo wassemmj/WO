@@ -8,16 +8,17 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 
 import '../Models/sing_up_model.dart';
 import '../Models/log_in_model.dart';
-import 'dart:io';
 
 class ApiProvider with ChangeNotifier {
   bool isLoading = false;
   bool isBack = false;
   String token = '';
   bool isExpert = false;
-  List favList = [];
+  int money = 0;
+  List? favList = [];
+  List li = [];
 
-  String url = 'http://192.168.114.161:8000';
+  String url = 'http://192.168.1.102:8000';
 
   Future<http.Response> register(SingUpModel singUpModel) async {
     isLoading = false;
@@ -44,55 +45,60 @@ class ApiProvider with ChangeNotifier {
     return response;
   }
 
-  Future<http.Response> registerExpert(ExpertModels expert) async {
+  Future registerExpert(ExpertModels expert) async {
     isLoading = false;
     isBack = false;
     isLoading = true;
     notifyListeners();
-    http.Response response = await http.post(
-      Uri.parse('$url/api/add-expert'),
-      headers: {
+    // http.Response response = await http.post(
+    //   Uri.parse('$url/api/add-expert'),
+    //   headers: {
+    //     'Accept': 'application/json',
+    //   },
+    //   body: {
+    //     "mobile": expert.mobile,
+    //     "address": expert.address,
+    //     "brief": expert.brief,
+    //     "session_period": expert.sessionPeriod,
+    //     "categoriesIds": jsonEncode(expert.consId),
+    //     "available": jsonEncode(expert.time),
+    //     'session_price': expert.money,
+    //     "token": token,
+    //     //'image' : base64Encode(expert.pickedImage.readAsBytesSync()),
+    //   },
+    // );
+
+    var request = http.MultipartRequest(
+        'POST',
+        Uri.parse(
+          '$url/api/add-expert',
+        ));
+    request.fields.addAll({
+      "mobile": expert.mobile,
+      "address": expert.address,
+      "brief": expert.brief,
+      "session_period": expert.sessionPeriod,
+      "categoriesIds": jsonEncode(expert.consId),
+      "available": jsonEncode(expert.time),
+      'session_price': expert.money,
+      "token": token,
+    });
+    request.files.add(await http.MultipartFile.fromPath('image',expert.pickedImage.path));
+    request.headers.addAll(
+      {
         'Accept': 'application/json',
       },
-      body: {
-        "mobile": expert.mobile,
-        "address": expert.address,
-        "brief": expert.brief,
-        "session_period": expert.sessionPeriod,
-        "categoriesIds": jsonEncode(expert.consId),
-        "available": jsonEncode(expert.time),
-        'session_price': expert.money,
-        "token": token,
-        //'image' : base64Encode(expert.pickedImage.readAsBytesSync()),
-      },
     );
-    // var request = http
-    //     .MultipartRequest('POST', Uri.parse('$url/api/add-expert',))..fields.addAll({
-    //   "mobile": expert.mobile,
-    //   "address": expert.address,
-    //   "brief": expert.brief,
-    //   "session_period": expert.sessionPeriod,
-    //   "categoriesIds": jsonEncode(expert.consId),
-    //   "available": jsonEncode(expert.time),
-    //   'session_price': expert.money,
-    //   "token": token,
-    //   //'image' : expert.pickedImage
-    // })..headers.addAll({
-    //      'Accept': 'application/json',
-    //    },);
-    // Uint8List data = await file.readAsBytes();
-    // List<int> list = data.cast();
-    // request.files.add(http.MultipartFile.fromBytes('image', list,filename: file.path));
-    // var response = await request.send();
+    http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
-    isBack = true;
-    isExpert = true;
-    print(response);
-    }else {
-    print(response);
+      isBack = true;
+      isExpert = true;
+      print(response.stream.bytesToString());
+    } else {
+      print(response.reasonPhrase);
     }
     isLoading = false;
-    return response;
+    //return response;
   }
 
   Future<http.Response> login(LogInModel logInModel) async {
@@ -113,8 +119,9 @@ class ApiProvider with ChangeNotifier {
       isBack = true;
       setData(true);
       token = map['access_token'];
+      money = map['user']['money'];
       isExpert = map['isExpert'];
-      print(isExpert);
+      print(money);
       print(response.body);
     } else {
       print(response.body);
@@ -126,8 +133,8 @@ class ApiProvider with ChangeNotifier {
 
   Future setData(bool t) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    DateTime? expirationDate = token.isNotEmpty ? JwtDecoder.getExpirationDate(
-        token) : null;
+    DateTime? expirationDate =
+        token.isNotEmpty ? JwtDecoder.getExpirationDate(token) : null;
     if (t && expirationDate != null && expirationDate.isAfter(DateTime.now())) {
       prefs.setBool('login', t);
     } else {
@@ -189,7 +196,8 @@ class ApiProvider with ChangeNotifier {
     return response;
   }
 
-  Future<http.Response> bookingApp(int expertId, String date, String time) async {
+  Future<http.Response> bookingApp(
+      int expertId, String date, String time) async {
     isLoading = false;
     isBack = false;
     isLoading = true;
@@ -246,9 +254,7 @@ class ApiProvider with ChangeNotifier {
       headers: {
         'Accept': 'application/json',
       },
-      body: {
-        'token': token
-      },
+      body: {'token': token},
     );
     if (res.statusCode == 200) {
       isBack = true;
@@ -266,6 +272,31 @@ class ApiProvider with ChangeNotifier {
     isLoading = true;
     http.Response response = await http.post(
       Uri.parse('$url/api/profile'),
+      headers: {
+        'Accept': 'application/json',
+      },
+      body: {
+        'token': token,
+      },
+    );
+    if (response.statusCode == 200) {
+      var map = jsonDecode(response.body);
+     // money = map["userMoney"];
+      isBack = true;
+      print(response.body);
+    } else {
+      print(response.body);
+    }
+    isLoading = false;
+    return response;
+  }
+
+  Future<http.Response> delApp(int appointmentId) async {
+    isLoading = false;
+    isBack = false;
+    isLoading = true;
+    http.Response response = await http.delete(
+      Uri.parse('$url/api/$appointmentId/delete'),
       headers: {
         'Accept': 'application/json',
       },
@@ -298,7 +329,8 @@ class ApiProvider with ChangeNotifier {
     );
     if (response.statusCode == 200) {
       isBack = true;
-      //favList = jsonDecode(response.body)[0];
+      favList = jsonDecode(response.body)['favorite'];
+      print(favList);
       print(response.body);
     } else {
       print(response.body);
@@ -357,7 +389,11 @@ class ApiProvider with ChangeNotifier {
 
   bool isMealFavorites(int id) {
     notifyListeners();
-    return favList.any((expert) => id == expert['id']);
+    return favList!.any((expert) {
+      print(id);
+      print(expert['id']);
+      return id == expert['id'];
+    });
   }
 
   Future<http.Response> rate(int expertId, double rate) async {

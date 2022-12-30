@@ -9,9 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:provider/provider.dart';
 
-import 'package:http/http.dart' as http;
 import '../Provider/api_provider.dart';
 import '../Provider/language_provider.dart';
+import '../Widget/construction.dart';
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({Key? key}) : super(key: key);
@@ -129,11 +129,13 @@ class _TabsScreenState extends State<TabsScreen> {
   }
 }
 
-class MySearchDelegate extends SearchDelegate{
+class MySearchDelegate extends SearchDelegate {
   List<String> searchResult = [
-    'Waseem',
-    'Obada',
-    'Mohammed',
+    'Sport Consulting',
+    'Legal Consulting',
+    'mmm',
+    'استشارة طبية',
+    'سامر',
   ];
 
   @override
@@ -157,7 +159,9 @@ class MySearchDelegate extends SearchDelegate{
 
   @override
   Widget buildResults(BuildContext context) {
-    return Result(query: query,);
+    return Result(
+      query: query,
+    );
   }
 
   @override
@@ -180,11 +184,10 @@ class MySearchDelegate extends SearchDelegate{
           );
         });
   }
-
 }
 
 class Result extends StatefulWidget {
-  const Result({Key? key,required this.query}) : super(key: key);
+  const Result({Key? key, required this.query}) : super(key: key);
 
   final String query;
 
@@ -194,50 +197,93 @@ class Result extends StatefulWidget {
 
 class _ResultState extends State<Result> {
   List li = [];
+  List li2 = [];
+
   @override
   Widget build(BuildContext context) {
+    var lan = Provider.of<LanguageProvider>(context, listen: true);
     return FutureBuilder(
-      future: search(),
-      builder: (context,snapshot) {
+      future: search(lan.isEn),
+      builder: (context, snapshot) {
         List l = li.where((element) {
           List ll = element['name'].toString().split('');
-          print(ll);
+          // print(ll);
           List lll = widget.query.split('');
-          print(lll);
-          for(int i=0;i<lll.length;i++) {
-            if(lll[i]!=ll[i]||lll.length>ll.length) {
+          // print(lll);
+          for (int i = 0; i < lll.length; i++) {
+            if (lll[i] != ll[i] || lll.length > ll.length) {
               return false;
             }
           }
           return true;
         }).toList();
-        return l.isNotEmpty? ListView.builder(
-          itemCount: l.length,
-          itemBuilder: (context,index) {
-            return Expert(name: l[index]['name'], imgPath: '', id: l[index]['id']);
-          },
-        ) :const Center(
-          child: Text(
-            "Not found",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black
-            ),
-          ),
-        );
+        List l2 = li2.where((element) {
+          List ll = lan.isEn
+              ? element['titleE'].toString().toLowerCase().split('')
+              : element['titleA'].toString().split('');
+          // print(ll);
+          List lll = widget.query.toLowerCase().split('');
+          // print(lll);
+          for (int i = 0; i < lll.length; i++) {
+            if (lll[i] != ll[i] || lll.length > ll.length) {
+              return false;
+            }
+          }
+          return true;
+        }).toList();
+        print('${l.length} \\\\\\\\\ ${l2.length}');
+        return snapshot.connectionState == ConnectionState.waiting
+            ? (const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.purple,
+                ),
+              ))
+            : l.isNotEmpty
+                ? ListView.builder(
+                    itemCount: l.length,
+                    itemBuilder: (context, index) {
+                      return Expert(
+                          name: l[index]['name'],
+                          imgPath:
+                              '${Provider.of<ApiProvider>(context, listen: true).url}/storage/${l[index]['image']}',
+                          id: l[index]['id']);
+                    },
+                  )
+                : l2.isNotEmpty
+                    ? ListView.builder(
+                        itemCount: l2.length,
+                        itemBuilder: (context, index) {
+                          return Construction(
+                            constructionName: lan.isEn
+                                ? l2[index]['titleE']
+                                : l2[index]['titleA'],
+                            id: l2[index]['id'],
+                          );
+                        },
+                      )
+                    : const Center(
+                        child: Text(
+                          "Not found",
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black),
+                        ),
+                      );
       },
     );
   }
 
-  Future search() async {
+  Future search(bool isEn) async {
     var provider = Provider.of<ApiProvider>(context, listen: false);
     var r = await provider.search();
+    var response = await provider.category(isEn);
     var map = jsonDecode(r.body);
     if (provider.isBack) {
       li = map['experts'];
+      var cat = jsonDecode(response.body);
+      li2 = cat[0];
       print(li);
     }
   }
 }
-

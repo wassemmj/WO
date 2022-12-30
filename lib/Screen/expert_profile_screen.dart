@@ -42,14 +42,14 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
 
   List conId = [];
 
-  List<Map<String, String>> time = [
-    {"day": "saturday", "start": "from", "end": "to"},
-    {"day": "sunday", "start": "from", "end": "to"},
-    {"day": "monday", "start": "from", "end": "to"},
-    {"day": "tuesday", "start": "from", "end": "to"},
-    {"day": "wednesday", "start": "from", "end": "to"},
-    {"day": "thursday", "start": "from", "end": "to"},
-    {"day": "friday", "start": "from", "end": "to"},
+  late List<Map<String, String>> time = [
+  {"day": "saturday", "start": 'from', "end": 'to'},
+  {"day": "sunday", "start": 'from', "end": 'to'},
+  {"day":"monday", "start": 'from', "end": 'to'},
+  {"day": "tuesday", "start": 'from', "end":'to'},
+  {"day":"wednesday", "start": 'from', "end": 'to'},
+  {"day": "thursday", "start": 'from', "end":'to'},
+  {"day":"friday", "start":'from', "end": 'to'},
   ];
 
   @override
@@ -549,7 +549,7 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
       pickedImage: pickedImage!,
     );
     print(dd);
-    var r = await provider.registerExpert(expertModels);
+    await provider.registerExpert(expertModels);
     print(li);
     print(conId);
     print(jsonEncode(time));
@@ -591,19 +591,19 @@ class _ExpertProfileScreenState extends State<ExpertProfileScreen> {
       if (provider.isBack) {
         //var map = jsonDecode(r.body);
         //print(map);
-        print(r);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        //print(r.body);
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text(
             'register successfully',
             textDirection: TextDirection.ltr,
-            style: const TextStyle(fontSize: 15),
+            style: TextStyle(fontSize: 15),
           ),
-          duration: const Duration(seconds: 1),
+          duration: Duration(seconds: 1),
         ));
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (_) => const TabsScreen()));
       } else {
-        print(r);
+        //print(r.body);
       }
       print(dd);
     } else {
